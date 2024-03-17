@@ -1,0 +1,26 @@
+<form action="/login" method="POST">
+
+  <div class="main-login">
+    <div class="left-login">
+      <h1>Faça login<br>Para ter acesso ao sistema!</h1>
+      <img src="img/salao.svg" alt="salão" class="left-image-login">
+    </div>
+    <div class="right-login">    
+      <div class="card-login">
+        <h1>Login</h1>
+        {{#if message}}
+          <div class="msglogin">{{message}}</div>
+        {{/if}}
+        <div class="textfield">
+          <label for="usuario">Usuário</label>
+          <input type="text" name="usuario" placeholder="Usuário" autocomplete="on"/>
+        </div>
+        <div class="textfield">
+          <label for="senha">Senha</label>
+          <input type="password" name="senha" placeholder="Senha" required/>
+        </div>
+        <button class="btn-login" type="submit">Login</button>
+      </div>
+    </div>
+  </div>
+</form>

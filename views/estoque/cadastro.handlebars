@@ -1,0 +1,52 @@
+{{>navbar}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <input type="hidden" id="id_estoque" name="id" class="invisible"/>
+  <input type="hidden" id="isSave_estoque" name="isSave" class="invisible"/>
+  <div class="container">    
+    <div class="card">
+      <h1>Cadastro de Estoque</h1>
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
+        <div class="line">
+        <div class="textfield cod">
+
+          <label for="codigo_estoque">*Código</label>
+          <input type="text" name="codigo" id="codigo_estoque" placeholder="Ex: EA123" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="descricao_estoque">*Descrição</label>
+          <input type="text" name="descricao" id="descricao_estoque" placeholder="Ex: Esmalte azul 123" autocomplete="off" />
+        </div>
+        <div class="textfield">
+          <label for="fabricante_estoque">*Fabricante</label>
+          <input type="text" name="fabricante" id="fabricante_estoque" placeholder="Ex: Risque" autocomplete="off" />
+        </div>
+        <div class="textfield cod">
+          <label for="qtde_estoque">Qtde atual</label>
+          <input type="number" name="qtde" id="qtde_estoque" placeholder="Ex: 50" autocomplete="off" />
+        </div>
+      </div>
+      <div class="line">
+        <div class="textfield cod">
+          <label for="custo_estoque">*Custo R$</label>
+          <input type="text" name="custo" id="custo_estoque" placeholder="Ex: 1,50" autocomplete="off"/>
+        </div>
+        <div class="textfield cod">
+          <label for="lucro_estoque">*Lucro %</label>
+          <input type="text" name="lucro" id="lucro_estoque" placeholder="Ex: 15.5" autocomplete="off"/>
+        </div>
+        <div class="textfield cod">
+          <label for="venda_estoque">Venda R$</label>
+          <input type="text" name="venda" id="venda_estoque" placeholder="0,00" readonly/>
+        </div>
+
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO</p>
+      </div>
+      <button class="btn-salvar" id="btnSalvar_estoque">Salvar</button>
+    </div>
+  </div>
+</form>
