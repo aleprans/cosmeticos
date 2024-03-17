@@ -19,7 +19,7 @@ async function createTables() {
     'email varchar(255),'+
     'PRIMARY KEY (id)'+
     ')'
-    await conn.query(TableClientes)
+  await conn.query(TableClientes)
   
   const tableUsuario = 'CREATE TABLE IF NOT EXISTS usuarios ('+
     'id int NOT NULL AUTO_INCREMENT,'+
@@ -31,7 +31,7 @@ async function createTables() {
     'eadmin int DEFAULT 0,'+
     'PRIMARY KEY (id)'+
     ')'
-    await conn.query(tableUsuario)
+  await conn.query(tableUsuario)
   
   const tableEstoque = 'CREATE TABLE IF NOT EXISTS estoque ('+
     'id int NOT NULL AUTO_INCREMENT,'+
@@ -44,7 +44,8 @@ async function createTables() {
     'qtde int DEFAULT 0,'+
     'PRIMARY KEY (id)'+
     ')'
-  
+  await conn.query(tableEstoque)
+
   const moviEstoque = 'CREATE TABLE IF NOT EXISTS moviEstoque ('+
     'id int NOT NULL AUTO_INCREMENT,'+
     'codigo varchar(12) NOT NULL,'+
@@ -52,7 +53,8 @@ async function createTables() {
     'dtAtual varchar(10) ,'+
     'PRIMARY KEY (id)'+
     ')'
-    await conn.query(moviEstoque)
+  await conn.query(moviEstoque)
+  
   return 
 }
 
