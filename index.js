@@ -8,6 +8,7 @@ const flash = require('connect-flash')
 const passport = require('passport')
 require('./config/auth')(passport)
 const {authenticado} = require('./helpers/authenticated')
+const {eAdmin} = require('./helpers/eAdmin')
 
 const login = require('./src/router/login')
 const caixa = require('./src/router/caixa')
@@ -22,7 +23,7 @@ app.use(express.json())
 app.use(session({
   secret: 'pransk',
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: false
 }))
 
 app.use(passport.initialize())
@@ -56,12 +57,11 @@ app.use(async (req, res, next) => {
 })
 
 //Rotas
-
 app.use('/login', login)
 app.use('/caixa', authenticado, caixa)
 app.use('/estoque', authenticado, estoque)
+app.use('/usuarios', eAdmin, usuarios)
 app.use('/logout', authenticado, logout)
-app.use('/usuarios', authenticado, usuarios)
 
 //Geral
 const PORT = process.env.PORT || 1512

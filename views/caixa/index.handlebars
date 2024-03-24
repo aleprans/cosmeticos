@@ -1,9 +1,39 @@
 {{>navbar}}
-
-<input type="text" id="itens-select"  class="invisible" value="{{descricao}}">
-<form action="" method="post" id="user">
-  <div class="container">    
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<input type="text" id="itens-select"  class="invisible" value="{{produto}}">
+<input type="text" id="formPg-select"  class="invisible" value="{{formaPaga}}">
+<form action="" method="post" id="form">
+  <div class="modal">
+  <div class="container">
     <div class="card">
+      <h1>Finalizar compra</h1>
+      <div class="line">
+        <div class="textfield">
+          <label for="form-pg">Form Pagamento</label>
+          <div class="select-pg">
+            <div class="btn-select-pg">
+              <span>Selecione a forma de pagamento</span>
+            </div>
+            <div class="select-content-pg">
+              <input type="text" name="item-caixa-pg" id="input-select-pg">
+              <ul class="options-pg">
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="textfield cod">
+          <label for="vlTotal">Valor Total</label>
+          <input type="text" name="vlTotal" id="vlTotal"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</form>
+  <div class="container">    
+    <div class="card ">
       <h1>Caixa</h1>
       <div class="msg" id="msg"><p id="msgtext"></p></div>
       <div class="line">
@@ -14,19 +44,49 @@
               <span>Selecione um produto</span>
             </div>
             <div class="select-content">
-              <input type="text" name="" id="input-select">
+              <input type="text" name="item-caixa" id="input-select">
               <ul class="options">
               </ul>
             </div>
           </div>
         </div>
+        <div class="textfield cod">
+          <label for="item-qtde-estoque">Qtde disponivel</label>
+          <input type="number" name="qtde-estoque" id="item-qtde-estoque" min="1" value="0" readonly/>
+        </div>
+        <div class="textfield cod">
+          <label for="item-qtde">Qtde</label>
+          <input type="number" name="qtde" id="item-qtde" min="1" value="1"/>
+        </div>
       </div>
        <div class="line">
         <div class="textfield">
-          <label for="item-estoque">Produto</label>
-          <input type="text" name="venda" id="venda_estoque"/>
+          <label for="item-estoque">Produtos</label>
         </div>
        </div>
+       <div class="line">
+        <div class="textfield">
+          <table class="tab-caixa">
+            <thead>
+              <tr>
+                <th class="l1">codigo</th>
+                <th class="l2">Descricao</th>
+                <th class="l3">Qtde</th>
+                <th class="l4">Valor un</th>
+                <th class="l5">Valor</th>
+              </tr>
+            </thead>
+            <tbody class="tbody-caixa">
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="line">
+        <div class="textfield total">
+          <label for="total">Valor Total</label>
+          <input type="text" name="total" id="total" value="0,00" readonly>
+        </div>
+        <button class="btn-finalizar" id="btnFinalizarCompra">Finalizar</button>
+      </div>
     </div>
   </div>
-</form>

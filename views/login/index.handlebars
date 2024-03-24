@@ -3,7 +3,7 @@
   <div class="main-login">
     <div class="left-login">
       <h1>Faça login<br>Para ter acesso ao sistema!</h1>
-      <img src="img/salao.svg" alt="salão" class="left-image-login">
+      <img src="img/logo.svg" alt="salão" class="left-image-login">
     </div>
     <div class="right-login">    
       <div class="card-login">
@@ -13,11 +13,11 @@
         {{/if}}
         <div class="textfield">
           <label for="usuario">Usuário</label>
-          <input type="text" name="usuario" placeholder="Usuário" autocomplete="on"/>
+          <input type="text" name="usuario" placeholder="Usuário" autocomplete="off"/>
         </div>
         <div class="textfield">
           <label for="senha">Senha</label>
-          <input type="password" name="senha" placeholder="Senha" required/>
+          <input type="password" name="senha" id="senhaLogin" placeholder="Senha" required/>
         </div>
         <button class="btn-login" type="submit">Login</button>
       </div>

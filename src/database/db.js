@@ -51,18 +51,48 @@ async function createTables() {
     'codigo varchar(12) NOT NULL,'+
     'qtde int DEFAULT 0,'+
     'dtAtual varchar(10) ,'+
+    'usuario INT ,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(moviEstoque)
-  
+
+  const formPagamentos = 'CREATE TABLE IF NOT EXISTS formPagamentos ('+
+    'id INT NOT NULL AUTO_INCREMENT,'+
+    'codigo VARCHAR(12) NOT NULL,'+
+    'descricao VARCHAR(255) NOT NULL,'+
+    'PRIMARY KEY (id)'+
+    ')'
+  await conn.query(formPagamentos)
+
+  const itensVendidos = 'CREATE TABLE IF NOT EXISTS itensVendidos ('+
+    'id INT NOT NULL AUTO_INCREMENT,'+
+    'idItem INT NOT NULL,'+
+    'qtdeItem INT NOT NULL,'+
+    'idVenda INT NOT NULL,'+
+    'PRIMARY KEY (id)'+
+    ')'
+  await conn.query(itensVendidos)
+
+  const vendas = 'CREATE TABLE IF NOT EXISTS vendas ('+
+    'id INT NOT NULL AUTO_INCREMENT,'+
+    'valor VARCHAR(20) NOT NULL,'+
+    'dataVd VARCHAR(10) NOT NULL,'+
+    'usuario INT NOT NULL,'+
+    'PRIMARY KEY (id)'+
+    ')'
+  await conn.query(vendas)
+
   return 
 }
 
 const tabelas = [
-  ['clientes','nome', 'cpf', 'endereco', 'telefone', 'email'],
-  ['usuarios', 'usuario', 'nome', 'cpf', 'email', 'senha', 'eadmin'],
-  ['estoque', 'codigo', 'descricao', 'fabricante', 'qtde', 'custo', 'lucro', 'venda'],
-  ['moviEstoque', 'codigo', 'qtde', 'dtAtual']
+  ['clientes','nome', 'cpf', 'endereco', 'telefone', 'email'], // 0
+  ['usuarios', 'nome', 'usuario', 'cpf', 'email', 'eadmin', 'senha'], // 1
+  ['estoque', 'codigo', 'descricao', 'fabricante', 'qtde', 'custo', 'lucro', 'venda'], // 2
+  ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario'], // 3
+  ['formPagamentos', 'codigo', 'descricao'], // 4
+  ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda'], // 5
+  ['vendas', 'valor', 'dataVd', 'usuario'] // 6
 ]
 
 async function signIn(tab, usuario) {
@@ -118,6 +148,16 @@ async function update(tab, id, dados){
   return await conn.query(sql, values)
 }
 
+async function updateSpecific(tab, id, campo, dado){
+  const arrDados = Object.values(dado)
+  const conn = await connect()
+  const campos = tabelas[tab][campo]
+  let param = campos+' = '+dado
+  const sql = "UPDATE " +tabelas[tab][0]+" SET "+param+" WHERE ID = ?"
+  const values = [id]
+  return await conn.query(sql, values)
+}
+
 async function deleteId(tab, id){
   const conn = await connect()
   const sql = "DELETE FROM " +tabelas[tab][0]+ " WHERE id = ?"
@@ -125,5 +165,18 @@ async function deleteId(tab, id){
   return await conn.query(sql, values)
 }
 
+async function deleteSpecific(tab, campo, id){
+  const conn = await connect()
+  const sql = "DELETE FROM " +tabelas[tab][0]+ " WHERE "+campo+" = ?"
+  const values = [id]
+  return await conn.query(sql, values)
+}
 
-module.exports = {createTables, signIn, selectAll, selectOneId, selectSpecific, insert, update, deleteId}
+async function query(comand) {
+  const conn = await connect()
+  const [rows] = await conn.query(comand)
+  return rows
+}
+
+
+module.exports = {createTables, signIn, selectAll, selectOneId, selectSpecific, insert, update, updateSpecific, deleteId, deleteSpecific, query}

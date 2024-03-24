@@ -5,8 +5,8 @@ const db = require('../src/database/db')
 
 module.exports = function(passport) {
 
-  async function findUser(usuario){
-    const result = await db.signIn(1, usuario)
+  async function findUser(user){
+    const result = await db.signIn(1, user)
     return result
   }
 
@@ -29,7 +29,7 @@ module.exports = function(passport) {
     }
     catch (error) {
       console.log(error)
-      done(error, false)
+      return done(error, false)
     }
   }))
   
