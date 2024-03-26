@@ -1,4 +1,7 @@
 {{>navbar}}
+{{#if error_msg}}
+  <div class="invisible">erro,{{error_msg}}</div>
+{{/if}}
 {{#if msg}}
   <div class="invisible">{{tipo}},{{msg}}</div>
 {{/if}}

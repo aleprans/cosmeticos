@@ -215,12 +215,12 @@ text-align: center;
   overflow: auto;
 }
 
-.select , .select-pg, .select-acesso{
+.select , .select-pg, .select-acesso, .select-prod{
   position: relative;
   width: 100%;
 }
 
-.btn-select, .btn-select-pg, .btn-select-acesso {
+.btn-select, .btn-select-pg, .btn-select-acesso, .btn-select-prod {
   padding: 15px 8px;
   width: 100%;
   border-radius: 10px;
@@ -230,11 +230,11 @@ text-align: center;
   color: #f0ffff94;
 }
 
-.btn-select span, .btn-select-pg span, .btn-select-acesso span{
+.btn-select span, .btn-select-pg span, .btn-select-acesso span, .btn-select-prod span{
   width: 100%;
 }
 
-.select-content, .select-content-pg, .select-content-acesso{
+.select-content, .select-content-pg, .select-content-acesso, .select-content-prod{
   border: 1px solid gray;
   border-radius: 5px;
   padding: 10px;
@@ -247,7 +247,7 @@ text-align: center;
   color: #f0ffff94;
 }
 
-.select-content input, .select-content-pg input{
+.select-content input, .select-content-pg input, .select-content-prod input{
   padding: 3px;
   width: 90%;
   margin: 5px;
@@ -256,7 +256,7 @@ text-align: center;
   border-radius: 5px;
 }
 
-.select-content .options, .select-content-pg .options-pg, .select-content-acesso .options-acesso{
+.select-content .options, .select-content-pg .options-pg, .select-content-acesso .options-acesso, .select-content-prod .options-prod{
   max-height: 250px;
   list-style: none;
   overflow: auto;
@@ -264,7 +264,7 @@ text-align: center;
   font-size: 14px;
 }
 
-.options li, .options-pg li, .options-acesso li{
+.options li, .options-pg li, .options-acesso li, .options-prod{
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
@@ -273,12 +273,12 @@ text-align: center;
   border-radius: 2px;
 }
 
-.options li:hover, .options-pg li:hover, .options-acesso li:hover{
+.options li:hover, .options-pg li:hover, .options-acesso li:hover, .options-prod li:hover{
   background-color: #aaa;
   color: #000;
 }
 
-.select .active, .select-pg .active, .select-acesso .active{
+.select .active, .select-pg .active, .select-acesso .active, .select-prod .active{
   display: block;
 }
 

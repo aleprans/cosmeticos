@@ -3,7 +3,6 @@ const router = express.Router()
 const db = require('../database/db')
 
 router.get('/', async (req, res) => {
-  viewActive = '/caixa'
   const prod = await db.query('SELECT * FROM estoque WHERE qtde > 0')
   const formPg = await db.selectAll(4)
   let produto = []

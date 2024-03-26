@@ -1,3 +1,6 @@
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
 <form action="/login" method="POST">
 
   <div class="main-login">
@@ -8,6 +11,7 @@
     <div class="right-login">    
       <div class="card-login">
         <h1>Login</h1>
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
         {{#if message}}
           <div class="msglogin">{{message}}</div>
         {{/if}}

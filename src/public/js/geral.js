@@ -118,42 +118,8 @@ $('#codigo_estoque').focus(function(){
   $('#venda_estoque').val("")
   $('#isSave_estoque').val('true')
   $('#id_estoque').val('')
-
+  $(this).select()
 })
-
-$('#codigoEntSai_estoque').blur(
-  function(){
-    const dado = $(this).val()
-    if(dado) {
-      $.ajax({
-        url: '/estoque/pesq',
-        type: 'POST',
-        dataType: 'json',
-        data:{ codigo: dado},
-        success:function(json){
-          if(json.length > 0){
-            $('#descricao_estoque').val(json[0].descricao)
-            $('#fabricante_estoque').val(json[0].fabricante)
-            $('#qtde_estoque').val(json[0].qtde)
-            $('#custo_estoque').val(json[0].custo)
-            $('#lucro_estoque').val(json[0].lucro)
-            $('#venda_estoque').val(json[0].venda)
-            $('#id_estoque').val(json[0].id)
-            $('#isSave_estoque').val('false')
-            $('#btnAtualizar_estoque').removeAttr('disabled')
-          }else { 
-            msgAlert('Produto não encontrado', 'erro')
-            $('#codigoEntSai_estoque').focus()
-            $('#btnAtualizar_estoque').attr('disabled', 'true')
-          }
-        },
-        error:function(e) {
-          msgAlert('Erro ao recuperar dados', 'erro')
-        } 
-      })
-    }
-  }
-)
 
 $('#codigo_estoque').blur(function(){
   const dado = $(this).val()
@@ -164,15 +130,19 @@ $('#codigo_estoque').blur(function(){
       dataType: 'json',
       data:{ codigo: dado},
       success:function(json){
-        $('#descricao_estoque').val(json[0].descricao)
-        $('#fabricante_estoque').val(json[0].fabricante)
-        $('#qtde_estoque').val(json[0].qtde)
-        $('#qtde_estoque').attr('disabled','true')
-        $('#custo_estoque').val(json[0].custo)
-        $('#lucro_estoque').val(json[0].lucro)
-        $('#venda_estoque').val(json[0].venda)
-        $('#id_estoque').val(json[0].id)
-        $('#isSave_estoque').val('false')
+        if(json.length > 0){
+          $('#descricao_estoque').val(json[0].descricao)
+          $('#fabricante_estoque').val(json[0].fabricante)
+          $('#qtde_estoque').val(json[0].qtde)
+          $('#qtde_estoque').attr('readonly','true')
+          $('#custo_estoque').val(json[0].custo)
+          $('#lucro_estoque').val(json[0].lucro)
+          $('#venda_estoque').val(json[0].venda)
+          $('#id_estoque').val(json[0].id)
+          $('#isSave_estoque').val('false')
+        }else {
+          $('#qtde_estoque').removeAttr('readonly')
+        }
       },
       error:function(e) {
         msgAlert('Erro ao recuperar dados', 'erro')
@@ -214,6 +184,56 @@ $('.btn-select').click(function() {
         $('#item-qtde').focus().select()
       })
     })
+})
+
+$('.btn-select-prod').click(function() {
+  $('.select-content-prod').toggleClass('active')
+  if($('.select-content-prod').hasClass('active')){
+    $('#input-select-prod').val('')
+    $('#input-select-prod').focus()
+    $('.options-prod').find('li').remove()
+    $.ajax({
+      url: '/estoque/list',
+      type: 'POST',
+      dataType: 'json',
+      success:((json)=> {
+        let lista = []
+        json.forEach(element => {
+          lista.push(`${element.codigo} - ${element.descricao}`)
+          $('.options-prod').append(`<li class="li">${element.codigo} - ${element.descricao}</li>`)
+        })
+        $('#prod-select').val(lista)
+        $('.li').each(function() {
+          $(this).click(function() {
+            $('.btn-select-prod span').text($(this).text())
+            $('.select-content-prod').removeClass('active')
+            const cod = $('.btn-select-prod span').text().split('-')
+            const codigo = cod[0].substring(0 ,cod[0].length - 1)
+            $.ajax({
+              url: '/estoque/pesq',
+              type: 'POST',
+              dataType: 'json',
+              data: {codigo: codigo},
+              success:function(json){
+                $('#id_estoque').val(json[0].id)
+                $('#cod_estoque').val(json[0].codigo)
+                $('#desc_estoque').val(json[0].descricao)
+                $('#fabricante_estoque').val(json[0].fabricante)
+                $('#qtde_estoque').val(json[0].qtde)
+                $('#custo_estoque').val(json[0].custo)
+                $('#lucro_estoque').val(json[0].lucro)
+                $('#venda_estoque').val(json[0].venda)
+                $('#btnAtualizar_estoque').removeAttr('disabled')
+              },
+              error:function(e){
+                console.log('erro:'+e)
+              }
+            })
+          })
+        })
+      })
+    })
+  }
 })
 
 $('.btn-select-acesso').click(function() {
@@ -275,6 +295,46 @@ $('#input-select').keyup(function(e) {
           }
         })
       $('#item-qtde').focus().select()
+    })
+  })
+})
+
+$('#input-select-prod').keyup(function(e) {
+  var text = $(this).val().toUpperCase()
+  const list = $('#prod-select').val().split(',')
+  const arrFilter = list.filter((item => {
+    return item.toUpperCase().includes(text)
+  }))
+  $('.options-prod').find('li').remove()
+  arrFilter.forEach(element => {
+    $('.options-prod').append(`<li class="li">${element}</li>`)
+  })
+  $('.li').each(function() {
+    $(this).click(function() {
+      $('.btn-select-prod span').text($(this).text())
+      $('.select-content-prod').removeClass('active')
+      const cod = $('.btn-select-prod span').text().split('-')
+      const codigo = cod[0].substring(0 ,cod[0].length - 1)
+      $.ajax({
+        url: '/estoque/pesq',
+        type: 'POST',
+        dataType: 'json',
+        data:{ codigo: codigo},
+        success:function(json){
+          $('#id_estoque').val(json[0].id)
+          $('#cod_estoque').val(json[0].codigo)
+          $('#desc_estoque').val(json[0].descricao)
+          $('#fabricante_estoque').val(json[0].fabricante)
+          $('#qtde_estoque').val(json[0].qtde)
+          $('#custo_estoque').val(json[0].custo)
+          $('#lucro_estoque').val(json[0].lucro)
+          $('#venda_estoque').val(json[0].venda)
+          $('#btnAtualizar_estoque').removeAttr('disabled')
+        },
+        error:function(e){
+          console.log('erro:'+e)
+        }
+      })
     })
   })
 })

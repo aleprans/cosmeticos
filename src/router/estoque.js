@@ -6,36 +6,40 @@ router.get('/', async (req, res) => {
   res.render('estoque/menu')
 })
 
-router.get('/list', async (req, res) => {
-  const rows = await db.selectAll(3)
-  res.render('estoque/list', {rows})
+router.post('/list', async (req, res) => {
+  const rows = await db.selectAll(2)
+  res.json(rows)
 })
 
-router.get('/insert', (req, res) => {
-  res.render('estoque/insert')
+router.get('/insert', async (req, res) => {
+  // const prod = await db.selectAll(2)
+  // let produtos = []
+  // prod.forEach(element => {
+  //   produtos.push(`${element.codigo} - ${element.descricao}`)
+  // });
+  res.render('estoque/insert') //, {produtos})
 })
 
 router.post('/insert', async (req, res) => {
+  const user = req.user[0].id
   const dados = req.body
   const data = new Date()
   const dtAtual = `${data.getDate()}-${data.getMonth()+1}-${data.getFullYear()}`
   const id = dados.id
-  const qtdeAnterior = dados.qtde
   delete dados.id
-  const qtdeAtualizada = parseInt(dados.qtde) + parseInt(dados.qtdeInsert)
+  const qtdeAnterior = dados.qtde
+  const qtdeAtualizada = parseInt(qtdeAnterior) + parseInt(dados.qtdeInsert)
+  const qtdeInsert = dados.qtdeInsert
+  delete dados.qtdeInsert
   dados.qtde = qtdeAtualizada
   const result = await db.update(2, id, dados)
   if(result[0].affectedRows == 1) {
-    let dados2 = {}
-    dados2.codigo = dados.codigo
-    dados2.qtde = dados.qtdeInsert
-    dados2.data = dtAtual
-    const resp = await db.insert(3, dados2)
+    const resp = await db.insert(3, {codigo: dados.codigo, qtde: qtdeInsert, data: dtAtual, user})
     if(resp[0].affectedRows = 1) {
       res.render('estoque/insert', {tipo: 'sucesso', msg: 'Dados salvos com sucesso!'})
     }else {
       dados.qtde = qtdeAnterior
-      const result = await db.update(2, id, dados)
+      await db.update(2, id, dados)
       res.redirect('estoque/insert', {tipo: 'erro', msg: 'Erro ao salvar dados!'})
     }
   }else res.redirect('estoque/insert', {tipo: 'erro', msg: 'Erro ao salvar dados!'})
@@ -58,20 +62,20 @@ router.post('/cadastro', async (req, res, next) => {
     delete dados.id
     delete dados.isSave
     if(dados.qtde > 0)
-    result = await db.insert(2, dados)
-  else {
-    dados.qtde = 0
-    result = await db.insert(2, dados)
-  }
+      result = await db.insert(2, dados)
+    else {
+      dados.qtde = 0
+      result = await db.insert(2, dados)
+    }
   }else{
     delete dados.isSave
     const id = dados.id
     delete dados.id
     result = await db.update(2, id, dados)
   } 
-  if(result[0].affectedRows == 1)
+  if(result[0].affectedRows == 1){
   res.render('estoque/cadastro', {tipo: 'sucesso', msg: 'Dados salvos com sucesso!'})
-  else 
+  }else 
   res.redirect('estoque/cadastro', {tipo: 'erro', msg: 'Falha ao salvar dados!'})
 })
 
