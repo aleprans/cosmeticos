@@ -8,34 +8,36 @@
 <input type="text" id="itens-select"  class="invisible" value="{{produto}}">
 <input type="text" id="formPg-select"  class="invisible" value="{{formaPaga}}">
 <form action="" method="post" id="form">
-  <div class="modal">
-  <div class="container">
-    <div class="card">
-      <h1>Finalizar compra</h1>
-      <div class="line">
-        <div class="textfield">
-          <label for="form-pg">Form Pagamento</label>
-          <div class="select-pg">
-            <div class="btn-select-pg">
-              <span>Selecione a forma de pagamento</span>
-            </div>
-            <div class="select-content-pg">
-              <input type="text" name="item-caixa-pg" id="input-select-pg">
-              <ul class="options-pg">
-              </ul>
+</form>
+  <div class="container">    
+    <div class="modal">
+      <div class="cardModal">
+        <h1>Finalizar compra</h1>
+        <div class="line">
+          <div class="textfield">
+            <label for="form-pg">Form Pagamento</label>
+            <div class="select-pg">
+              <div class="btn-select-pg">
+                <span>Selecione a forma de pagamento</span>
+              </div>
+              <div class="select-content-pg">
+                <input type="text" name="item-caixa-pg" id="input-select-pg">
+                <ul class="options-pg">
+                </ul>
+              </div>
             </div>
           </div>
+          <div class="textfield cod">
+            <label for="vlTotal">Valor Total</label>
+            <input type="text" name="vlTotal" id="vlTotal"/>
+          </div>
         </div>
-        <div class="textfield cod">
-          <label for="vlTotal">Valor Total</label>
-          <input type="text" name="vlTotal" id="vlTotal"/>
+        <div class="bts">
+          <button class="btn-finalizar-compra" id="btnConcluir">Finalizar</button>
+          <button class="btn-finalizar-compra" id="btnVoltar">Voltar</button>
         </div>
       </div>
     </div>
-  </div>
-  </div>
-</form>
-  <div class="container">    
     <div class="card ">
       <h1>Caixa</h1>
       <div class="msg" id="msg"><p id="msgtext"></p></div>
@@ -62,12 +64,9 @@
           <input type="number" name="qtde" id="item-qtde" min="1" value="1"/>
         </div>
       </div>
-       <div class="line">
         <div class="textfield">
           <label for="item-estoque">Produtos</label>
         </div>
-       </div>
-       <div class="line">
         <div class="textfield">
           <table class="tab-caixa">
             <thead>
@@ -83,13 +82,12 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <div class="line">
-        <div class="textfield total">
-          <label for="total">Valor Total</label>
-          <input type="text" name="total" id="total" value="0,00" readonly>
+        <div class="line">
+          <div class="textfield total">
+            <label for="total">Valor Total</label>
+            <input type="text" name="total" id="total" value="0,00" readonly>
+          </div>
+          <button class="btn-finalizar" id="btnFinalizarCompra">Forma de pagamento</button>
         </div>
-        <button class="btn-finalizar" id="btnFinalizarCompra">Finalizar</button>
-      </div>
     </div>
   </div>

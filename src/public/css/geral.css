@@ -106,7 +106,7 @@ text-align: center;
   margin: 0;
 }
 
-.card {
+.card, .cardModal {
   width: 90%;
   display: flex;
   justify-content: center;
@@ -120,7 +120,7 @@ text-align: center;
   /* max-height: 400px; */
 }
 
-.card > h1 {
+.card > h1, .cardModal > h1 {
   color: #BF8C2C;
   font-weight: 800;
   margin: 0 0 10px 0;
@@ -167,9 +167,9 @@ text-align: center;
   color: #f0ffff94;
 }
 
-.btn-salvar ,.btn-login, .btn-finalizar {
+.btn-salvar ,.btn-login, .btn-finalizar, .btn-finalizar-compra {
   width: 100%;
-  padding: 16px 0px;
+  padding: 16px 5px;
   margin: 25px;
   border: none;
   border-radius: 8px;
@@ -186,6 +186,11 @@ text-align: center;
 .btn-finalizar {
   width: 20%;
   margin-left: 60%;
+}
+
+.btn-finalizar-compra {
+  width: 20%;
+  margin-left: 10px;
 }
 
 .menu-estoque {
@@ -287,6 +292,7 @@ text-align: center;
   width: 100%;
   border-radius: 10px;
   height: 190px;
+  margin-bottom: 10px;
 }
 
 .tab-caixa thead {
@@ -359,19 +365,44 @@ text-align: center;
   width: 100vw;
   height: 100vh;
   background: rgba(200,200,200, 0.7);
+  align-content: center;
+}
+
+.modal .cardModal {
+  margin: auto;
 }
 
 .active {
   display: block;
 }
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 1400px) {
   .card-login {
     width: 85%;
   }
+
+  .modal {
+    height: 85vh;
+  }
+  .cardModal {
+    width: 90%;
+  }
+
+  .bts {
+    font-size: 0.6rem;
+  }
+
+  .btn-finalizar-compra {
+    width: auto;
+  }
+
 }
 
 @media only screen and (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+
   .main-login {
     flex-direction: column;
   }
@@ -395,4 +426,64 @@ text-align: center;
     width: 50vw;
     overflow: hidden;
   }
+
+  .modal {
+    height: 90%;
+  }
+
+  .modal .cardModal{
+    width: 60%;
+    height: 50%;
+    align-self: center;
+  }
+
+  .modal .cardModal h1 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .card {
+    width: 70%;
+    height: 85%;
+    overflow:auto;
+  }
+
+  .card h1 {
+    margin-top: 300px;
+    margin-bottom: 0px;
+  }
+
+  .line {
+    flex-direction: column;
+    font-size: 0.7rem;
+  }
+
+  .btn-select, .select-content{
+    width: auto;
+  }
+
+  .textfield{
+    width: auto;
+  }
+
+  table {
+    font-size: 0.6rem;
+    height: auto;
+    width: 100%;
+  }
+
+  .tbody-caixa {
+    width: 100%;
+    height: 100%;
+  }
+
+  .btn-finalizar, .btn-finalizar-compra{
+    width: auto;
+    margin: 0;
+  }
+
+  .bts {
+    font-size: 0.6rem;
+  }
+
 }

@@ -261,6 +261,7 @@ $('.btn-select-pg').click(function() {
         $('.btn-select-pg span').text($(this).text())
         $('.select-content-pg').removeClass('active')
         $('#vlTotal').focus().select()
+        $('#btnConcluir').text('Finalizar')
       })
     })
 })
@@ -354,6 +355,7 @@ $('#input-select-pg').keyup(function(e) {
       $('.btn-select-pg span').text($(this).text())
       $('.select-content-pg').removeClass('active')
       $('#vlTotal').focus().select()
+      $('#btnConcluir').text('Finalizar')
     })
   })
 })
@@ -384,6 +386,7 @@ $('#item-qtde').keyup(function(e){
             '</tr>')
           $('.btn-select span').text('Selecione um produto')
           $('#item-qtde').val(1)
+          $('#item-qtde-estoque').val(0)
           valorT = valorT + valor
           $('#total').val(valorT.toFixed(2))
           itemCaixa.push(`${json[0].id}-${cod[0]}-${cod[1]}-${qtde}-${valorT}-${json[0].qtde}`)
@@ -396,7 +399,22 @@ $('#item-qtde').keyup(function(e){
 $('#btnFinalizarCompra').click(function() {
   if(valorT> 0)
     $('.modal').addClass('active')
+  else msgAlert('Adcione um produto', 'erro')
     $('#vlTotal').val(valorT.toFixed(2))
+})
+
+$('#btnConcluir').click(function() {
+  if($('.btn-select-pg span').text() != 'Selecione a forma de pagamento') {
+    let tipoPg = $('.btn-select-pg span').text().split('-')
+    $('.modal').removeClass('active')
+    finalizarCompra(itemCaixa, tipoPg )
+  }else {
+    msgAlert('Selecione a forma de pagamento', 'erro')
+  }
+})
+
+$('#btnVoltar').click(function() {
+  $('.modal').removeClass('active')
 })
 
 $('#vlTotal').keyup(function(e){
