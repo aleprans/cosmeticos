@@ -11,8 +11,8 @@
   <input type="hidden" id="cod_estoque" name="codigo" class="invisible"/>
   <input type="hidden" id="desc_estoque" name="descricao" class="invisible"/>
   <div class="container">    
-    <div class="card">
-      <h1>Entrada / Saida de Estoque</h1>
+    <div class="cardEstoque">
+      <h1>Entrada de Estoque</h1>
         <div class="msg" id="msg"><p id="msgtext"></p></div>
         <div class="line">
         <div class="textfield">
@@ -38,6 +38,16 @@
         </div>
       </div>
       <div class="line">
+        <div class="textfield">
+          <label for="fornecedor_estoque">Fornecedor</label>
+          <input type="text" name="fornecedor" id="fornecedor_estoque" placeholder="Ex: Risque" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="nota_estoque">Nota Fiscal</label>
+          <input type="text" name="nota" id="nota_estoque" placeholder="Ex: E123" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="line">
         <div class="textfield cod">
           <label for="custo_estoque">*Custo R$</label>
           <input type="text" name="custo" id="custo_estoque" placeholder="Ex: 1,50" autocomplete="off"/>
@@ -52,14 +62,14 @@
         </div>
         <div class="textfield cod">
           <label for="qtdeInsert_estoque">**Qtde a alterar</label>
-          <input type="number" name="qtdeInsert" id="qtdeInsert_estoque" placeholder="Ex: 50" autocomplete="off" />
+          <input type="number" name="qtdeInsert" id="qtdeInsert_estoque" placeholder="Ex: 50" autocomplete="off" min="1" />
         </div>
 
       </div>
       <div class="lbl">
-        <p>(*) OBRIGATÓRIO</p><p>(**)para saidas colocar valor negativo</p>
+        <p>(*) OBRIGATÓRIO</p>
       </div>
-      <button class="btn-salvar" id="btnAtualizar_estoque" disabled>Entrada / Saida</button>
+      <button class="btn-salvar" id="btnAtualizar_estoque" disabled>Entrada</button>
     </div>
   </div>
 </form>

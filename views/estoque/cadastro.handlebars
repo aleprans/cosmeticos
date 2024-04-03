@@ -9,7 +9,7 @@
   <input type="hidden" id="id_estoque" name="id" class="invisible"/>
   <input type="hidden" id="isSave_estoque" name="isSave" class="invisible"/>
   <div class="container">    
-    <div class="card">
+    <div class="cardEstoque">
       <h1>Cadastro de Estoque</h1>
         <div class="msg" id="msg"><p id="msgtext"></p></div>
         <div class="line">
@@ -26,10 +26,7 @@
           <label for="fabricante_estoque">*Fabricante</label>
           <input type="text" name="fabricante" id="fabricante_estoque" placeholder="Ex: Risque" autocomplete="off" />
         </div>
-        <div class="textfield cod">
-          <label for="qtde_estoque">Qtde atual</label>
-          <input type="number" name="qtde" id="qtde_estoque" placeholder="Ex: 50" autocomplete="off" />
-        </div>
+          <input type="hidden" name="qtde" id="qtde_estoque" value="0" />
       </div>
       <div class="line">
         <div class="textfield cod">

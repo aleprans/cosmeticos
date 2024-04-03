@@ -38,9 +38,9 @@ async function createTables() {
     'codigo varchar(12) NOT NULL,'+
     'descricao varchar(255) NOT NULL,'+
     'fabricante varchar(255) NOT NULL,'+
-    'custo varchar(18) NOT NULL,'+
+    'custo FLOAT NOT NULL,'+
     'lucro varchar(6) NOT NULL,'+
-    'venda varchar(20) NOT NULL,'+
+    'venda FLOAT NOT NULL,'+
     'qtde int DEFAULT 0,'+
     'PRIMARY KEY (id)'+
     ')'
@@ -75,7 +75,7 @@ async function createTables() {
 
   const vendas = 'CREATE TABLE IF NOT EXISTS vendas ('+
     'id INT NOT NULL AUTO_INCREMENT,'+
-    'valor VARCHAR(20) NOT NULL,'+
+    'valor FLOAT NOT NULL,'+
     'dataVd VARCHAR(10) NOT NULL,'+
     'usuario INT NOT NULL,'+
     'PRIMARY KEY (id)'+
@@ -89,10 +89,10 @@ const tabelas = [
   ['clientes','nome', 'cpf', 'endereco', 'telefone', 'email'], // 0
   ['usuarios', 'nome', 'usuario', 'cpf', 'email', 'eadmin', 'senha'], // 1
   ['estoque', 'codigo', 'descricao', 'fabricante', 'qtde', 'custo', 'lucro', 'venda'], // 2
-  ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario'], // 3
+  ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario', 'tipo', 'fornecedor', 'nota', 'motivo'], // 3
   ['formPagamentos', 'codigo', 'descricao'], // 4
-  ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda'], // 5
-  ['vendas', 'valor', 'dataVd', 'usuario'] // 6
+  ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda', 'valor'], // 5
+  ['vendas', 'valor', 'dataVd', 'usuario', 'status', 'vlorigin'] // 6
 ]
 
 async function signIn(tab, usuario) {
@@ -111,9 +111,12 @@ async function selectSpecific(tab, campo, dado) {
   return rows
 }
 
-async function selectAll(tab){
+async function selectAll(tab, order = null){
   const conn = await connect()
   const sql = "Select * from " +tabelas[tab][0]
+  if(order != null){
+    sql = sql+" order by "+tabelas[tab][order]
+  }
   const [rows] = await conn.query(sql)
   return rows
 }

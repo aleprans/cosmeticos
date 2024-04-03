@@ -1,0 +1,52 @@
+{{>navbar}}
+{{#if error_msg}}
+  <div class="invisible">erro,{{error_msg}}</div>
+{{/if}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <input type="hidden" id="prod-select"  class="invisible">
+  <input type="hidden" id="id_estoque" name="id" class="invisible"/>
+  <input type="hidden" id="cod_estoque" name="codigo" class="invisible"/>
+  <div class="container">    
+    <div class="cardEstoque">
+      <h1>Saida de Estoque</h1>
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
+        <div class="line">
+        <div class="textfield">
+          <label for="btn-select-prod">Produto</label>
+          <div class="select-prod">
+            <div class="btn-select-prod">
+              <span>Selecione um produto</span>
+            </div>
+            <div class="select-content-prod">
+              <input type="text" id="input-select-prod">
+              <ul class="options-prod">
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="textfield">
+          <label for="motivo_saida">motivo</label>
+          <input type="text" name="motivo" id="motivo_saida" placeholder="Ex: Quebrou" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="line">
+        <div class="textfield cod">
+          <label for="qtde_estoqueSaida">Qtde atual</label>
+          <input type="number" name="qtdeEstoque" id="qtde_estoque" placeholder="Ex: 50" autocomplete="off" readonly/>
+        </div>
+        <div class="textfield cod">
+          <label for="qtdeSaida_estoque">*Qtde a alterar</label>
+          <input type="number" name="qtdeSaida" id="qtdeSaida_estoque" placeholder="Ex: 50" autocomplete="off" min="1" />
+        </div>
+
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO</p>
+      </div>
+      <button class="btn-salvar" id="btnAtualizar_estoqueSaida" disabled>Saida</button>
+    </div>
+  </div>
+</form>

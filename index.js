@@ -7,13 +7,14 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('passport')
 require('./config/auth')(passport)
-const {authenticado} = require('./helpers/authenticated')
+const {authenticated} = require('./helpers/authenticated')
 const {eAdmin} = require('./helpers/eAdmin')
 
 const login = require('./src/router/login')
 const caixa = require('./src/router/caixa')
 const estoque = require('./src/router/estoque')
 const usuarios = require('./src/router/usuarios')
+const financeiro = require('./src/router/financeiro')
 const logout = require('./src/router/logout')
 
 const app = express()
@@ -57,11 +58,13 @@ app.use(async (req, res, next) => {
 })
 
 //Rotas
+app.use('/', login)
 app.use('/login', login)
-app.use('/caixa', authenticado, caixa)
-app.use('/estoque', authenticado, estoque)
+app.use('/caixa', authenticated, caixa)
+app.use('/estoque', authenticated, estoque)
 app.use('/usuarios', eAdmin, usuarios)
-app.use('/logout', authenticado, logout)
+app.use('/financeiro', financeiro)
+app.use('/logout',  logout)
 
 //Geral
 const PORT = process.env.PORT || 1512

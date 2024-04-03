@@ -1,8 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../database/db')
+const {eAdmin} = require('../../helpers/eAdmin')
 
-router.get('/', async (req, res) => {
+// Front-end
+router.get('/', (req, res) => {
+  res.render('caixa/menu')
+})
+
+router.get('/abre', async (req, res) => {
   const prod = await db.query('SELECT * FROM estoque WHERE qtde > 0')
   const formPg = await db.selectAll(4)
   let produto = []
@@ -16,6 +22,23 @@ router.get('/', async (req, res) => {
   res.render('caixa', {produto, formaPaga})
 })
 
+router.get('/fecha', eAdmin, async (req, res) => {
+  let total = ''
+  const vendas = await db.selectSpecific(6, 4, '0')
+  const soma = await db.query('select sum(valor) total from vendas where status = 0')
+  if(vendas[0]) {
+    if(soma[0].total != null){
+      total = String(soma[0].total.toFixed(2)).replace('.',',')
+    }
+    for(x = 0; x < vendas.length; x++){
+      vendas[x].valor = parseFloat(vendas[x].valor).toFixed(2).replace('.',',')
+    }
+    res.render('caixa/fechaCaixa', {vendas, total})
+  }else
+    res.render('caixa/fechaCaixa', {msg: 'Não há vendas em aberto!', tipo: 'erro'})
+})
+
+// Back-end
 router.post('/venda', async (req, res) => {
   const {codigo} = req.body
   const dado = codigo.slice(0, -1)
@@ -26,17 +49,18 @@ router.post('/venda', async (req, res) => {
 router.post('/finVenda', async (req, res) => {
   let erro = 0
   const dados = req.body
-  const user = (req.user[0].id)
+  const user = req.user[0].id
   const data = new Date()
-  const dtAtual = `${data.getDate()}-${data.getMonth()+1}-${data.getFullYear()}`
-  const dadosVenda = {valor: dados.valorT, data: dtAtual, usuario: user}
+  const dtAtual = data.toLocaleString('pt-br').slice(0,10)
+  const valorT = parseFloat(dados.vlTotal)
+  const dadosVenda = {valor: valorT.toFixed(2), data: dtAtual, usuario: user, status: 0, vlorigin: dados.valorT}
   const regVenda = await db.insert(6, dadosVenda)
   if(regVenda[0].affectedRows == 1){
     for( x = 0; x < dados.itens.length; x++){
 
       var veriQtde = await db.selectOneId(2, dados.itens[x][0])
       if(veriQtde[0].qtde >= dados.itens[x][3]) {
-        const it = {id: dados.itens[x][0], qtde: dados.itens[x][3], idVenda: regVenda[0].insertId} 
+        const it = {id: dados.itens[x][0], qtde: dados.itens[x][3], idVenda: regVenda[0].insertId, valorTItens: dados.itens[x][6]} 
         const regItVenda = await db.insert(5, it)
         if(regItVenda[0].affectedRows != 1) 
           erro = 1
@@ -70,4 +94,21 @@ router.post('/qtdeEstoque', async (req, res) => {
   const qtdeProd = await db.selectSpecific(2, 1, dado)
   res.json(qtdeProd)
 })
+
+router.post('/fecha/itens', async (req, res) => {
+  const venda = req.body
+  const dado = Object.values(venda).toString()
+  const itens = await db.query(`select e.codigo, e.descricao, i.qtdeitem, i.valor as valorItem, v.* from vendas v left join itensvendidos i on i.idvenda = v.id left join estoque e on i.iditem = e.id where v.status = 0 and v.id = ${dado};`)
+  res.json(itens)
+})
+
+router.post('/fecha/caixa', async (req, res) => {
+  const result = await db.query(`update vendas set status = 1 where status = 0`)
+  if(result.affectedRows > 0 ){
+    res.json({tipo: 'sucesso', msg: 'Caixa fechado com sucesso!'})
+  }else {
+    res.json({tipo: 'erro', msg: 'Falha ao fechar Caixa!'})
+  }
+})
+
 module.exports = router

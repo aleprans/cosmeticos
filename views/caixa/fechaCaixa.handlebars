@@ -1,0 +1,56 @@
+{{>navbar}}
+{{#if error_msg}}
+ <div class="invisible">erro,{{error_msg}}</div>
+{{/if}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+  <div class="container">    
+    <div class="cardFecha ">
+      <h1>Fechamento do Caixa</h1>
+      <div class="msg" id="msg"><p id="msgtext"></p></div>
+        <div class="textfield">
+          <div class="lineFecha">
+          <button class="btnFecha" id="fechaCaixa" >Fechar Caixa</button>
+          <div class="vlTotal">
+          <label class="lbFechaTotal">Total do caixa</label>
+          <label class="lbFechaTotal">R$ {{total}}</label>
+          </div>
+          </div>
+          <button class="btnItens" id="btnItens" >Visualizar itens das vendas</button>
+          <table class="tab-fecha">
+            {{#each vendas}}
+            <input type="hidden" id="idVenda" value="{{id}}">
+            <thead>
+              <tr>
+                <th class="lf1">Numero da venda</th>
+                <th class="lf2">Data da venda</th>
+                <th class="lf3">Valor da venda</th>
+              </tr>
+            </thead>
+            <tbody class="tbody-caixa">
+              <tr>
+                <td class="lf1">{{id}}</td>
+                <td class="lf2">{{dataVd}}</td>
+                <td class="lf3 lf13">R$ {{valor}}</td>
+              </tr>
+              <tr><td colspan="3" class="col-itens" >
+                <table class="tab-fechaItens">
+                  <thead>
+                    <tr>
+                      <th class="lf1">Itens da venda</th>
+                      <th class="lf2">Qtde</th>
+                      <th class="lf3">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody class="venda" venda="{{id}}">
+                    
+                  </tbody>
+                </table>
+              </td></tr>
+            </tbody>
+            {{/each}}
+          </table>
+        </div>
+    </div>
+  </div>

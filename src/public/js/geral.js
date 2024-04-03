@@ -69,7 +69,14 @@ $('#cadUsuario').blur(function() {
 })
 
 $('#btnAtualizar_estoque').click(function() {
-  if($('#qtdeInsert_estoque').val() == 0 || $('#qtdeInsert_estoque').val() == null)
+  if($('#qtdeInsert_estoque').val() < 1 || $('#qtdeInsert_estoque').val() == null)
+    msgAlert('Quantidade inválida!', 'erro')
+  else
+    $('#form').off('submit').submit()
+})
+
+$('#btnAtualizar_estoqueSaida').click(function() {
+  if($('#qtdeSaida_estoque').val() < 1 || $('#qtdeSaida_estoque').val() == null)
     msgAlert('Quantidade inválida!', 'erro')
   else
     $('#form').off('submit').submit()
@@ -223,7 +230,9 @@ $('.btn-select-prod').click(function() {
                 $('#custo_estoque').val(json[0].custo)
                 $('#lucro_estoque').val(json[0].lucro)
                 $('#venda_estoque').val(json[0].venda)
+                $('#fornecedor_estoque').focus()
                 $('#btnAtualizar_estoque').removeAttr('disabled')
+                $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
               },
               error:function(e){
                 console.log('erro:'+e)
@@ -330,7 +339,9 @@ $('#input-select-prod').keyup(function(e) {
           $('#custo_estoque').val(json[0].custo)
           $('#lucro_estoque').val(json[0].lucro)
           $('#venda_estoque').val(json[0].venda)
+          $('#fornecedor_estoque').focus()
           $('#btnAtualizar_estoque').removeAttr('disabled')
+          $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
         },
         error:function(e){
           console.log('erro:'+e)
@@ -375,21 +386,21 @@ $('#item-qtde').keyup(function(e){
           msgAlert('Quantidade em estoque insulficiente!', 'erro')
           $('#item-qtde').val(1)
         }else {
-          let venda = json[0].venda.replace(',','.')
-          const valor = venda * qtde
+          const valor = json[0].venda * qtde
+          let venda = String(json[0].venda).replace('.',',')
           $('tbody').append('<tr>'+
             '<td class="l1">'+cod[0]+'</td>'+
             '<td class="l2">'+cod[1]+'</td>'+
             '<td class="l3">'+qtde+'</td>'+
             '<td class="l4">'+venda+'</td>'+
-            '<td class="l5">'+valor.toFixed(2)+'</td>'+
+            '<td class="l5">'+String(valor.toFixed(2)).replace('.',',')+'</td>'+
             '</tr>')
           $('.btn-select span').text('Selecione um produto')
           $('#item-qtde').val(1)
           $('#item-qtde-estoque').val(0)
           valorT = valorT + valor
-          $('#total').val(valorT.toFixed(2))
-          itemCaixa.push(`${json[0].id}-${cod[0]}-${cod[1]}-${qtde}-${valorT}-${json[0].qtde}`)
+          $('#total').val(String(valorT.toFixed(2)).replace('.',','))
+          itemCaixa.push(`${json[0].id}-${cod[0]}-${cod[1]}-${qtde}-${valorT}-${json[0].qtde}-${valor}`)
         }
       }
     })
@@ -406,8 +417,9 @@ $('#btnFinalizarCompra').click(function() {
 $('#btnConcluir').click(function() {
   if($('.btn-select-pg span').text() != 'Selecione a forma de pagamento') {
     let tipoPg = $('.btn-select-pg span').text().split('-')
+    let vlTotal = $('#vlTotal').val()
     $('.modal').removeClass('active')
-    finalizarCompra(itemCaixa, tipoPg )
+    finalizarCompra(itemCaixa, tipoPg, vlTotal )
   }else {
     msgAlert('Selecione a forma de pagamento', 'erro')
   }
@@ -419,11 +431,90 @@ $('#btnVoltar').click(function() {
 
 $('#vlTotal').keyup(function(e){
   let tipoPg = $('.btn-select-pg span').text().split('-')
+  let vlTotal = $(this).val()
   const keycode = (e.keyCode ? e.keyCode : e.wich)
   $(this).mask('999.999.999.990,00', {reverse: true})
   if(keycode == 13){
     $('.modal').removeClass('active')
-    finalizarCompra(itemCaixa, tipoPg )
+    finalizarCompra(itemCaixa, tipoPg, vlTotal )
+  }
+})
+
+$('#fornecedor_estoque').keyup(function(e){
+  const keycode = (e.keyCode ? e.keyCode : e.wich)
+  if(keycode == 13){
+    $('#nota_estoque').focus().select()
+  }
+})
+
+$('#nota_estoque').keyup(function(e){
+  const keycode = (e.keyCode ? e.keyCode : e.wich)
+  if(keycode == 13){
+    $('#custo_estoque').focus().select()
+  }
+})
+
+$('#custo_estoque').keyup(function(e){
+  const keycode = (e.keyCode ? e.keyCode : e.wich)
+  if(keycode == 13){
+    $('#lucro_estoque').focus().select()
+  }
+})
+
+$('#lucro_estoque').keyup(function(e){
+  const keycode = (e.keyCode ? e.keyCode : e.wich)
+  if(keycode == 13){
+    $('#qtdeInsert_estoque').focus().select()
+  }
+})
+
+$('#btnItens').click(function(){
+  $('.tab-fechaItens').toggleClass('active')
+  if($('.tab-fechaItens').hasClass('active')){
+    $(this).text("Ocultar itens das vendas")
+    $('.venda').find('tr').remove()
+    $('.tbody-caixa').find("td.lf1").each(function(){
+      let venda = $(this).text()
+      $.ajax({
+        url: 'fecha/itens',
+        dataType: 'json',
+        type: 'post',
+        data: {venda: venda},
+        success:function(json){
+          json.forEach(e => {
+            $('tbody').find('.venda').each(function(){
+              if(e.id == $(this).attr('venda')){
+                $(this).append(`<tr>
+                  <td class="lf11" >${e.codigo} - ${e.descricao}</td>
+                  <td class="lf2" >${e.qtdeitem}</td>
+                  <td class="lf3" >${parseFloat(e.valorItem).toFixed(2).replace('.',',')}</td>
+                  </tr>`
+                )
+              }
+            })
+          })
+        }
+      })
+    })
+  }else $(this).text("Visualizar itens das vendas")
+})
+
+$('#fechaCaixa').click(function(){
+  console.log($('#idVenda').val())
+  if($('#idVenda').val() > 0) {
+    $.ajax({
+      url: 'fecha/caixa',
+      type: 'post',
+      dataType: 'json',
+      success: function(json) {
+        msgAlert(json.msg, json.tipo)
+        if(json.tipo == 'sucesso') {
+          setTimeout(()=> {
+            window.location.assign('/caixa')
+          },3000)
+        }
+      }
+    })
   }
 })
 
@@ -449,10 +540,7 @@ function validarEstoque(){
   }else if($('#lucro_estoque').val() < 1) {
     msgAlert('Lucro inválido!ee', 'erro')
     return false
-  }else if($('#qtde_estoque').val() < 1) {
-    msgAlert('Quantidade inválida!', 'erro')
-    return false
-  }  
+  }
   return true
 }
 
@@ -549,7 +637,7 @@ function validarUsuario() {
   return true
 }
 
-function finalizarCompra(item, formPg) {
+function finalizarCompra(item, formPg, vlTotal) {
   let itens = []
   item.forEach((it) => {
     itens.push(it.split('-'))
@@ -558,7 +646,7 @@ function finalizarCompra(item, formPg) {
     url: '/caixa/finVenda',
     type: 'POST',
     dataType: 'json',
-    data:{ itens, formPg, valorT},
+    data:{ itens, formPg, valorT, vlTotal},
     success:function(json){
       if(json.status){
         msgAlert(json.msg, 'sucesso')
