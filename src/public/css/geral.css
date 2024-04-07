@@ -34,7 +34,6 @@
 
 .left-login > h1 {
   color: #BF8C2C;
-  /* color: #ff35a4; */
   font-size: 3vw;
 }
 
@@ -106,7 +105,7 @@ text-align: center;
   margin: 0;
 }
 
-.card, .cardModal, .cardCaixa, .cardEstoque, .cardMenuEstoque, .cardMenuCaixa, .cardFecha {
+.card, .cardModal, .cardCaixa, .cardEstoque, .cardMenuEstoque, .cardMenuCaixa, .cardFecha, .cardMenuRelatorio {
   width: 90%;
   display: flex;
   justify-content: center;
@@ -122,10 +121,22 @@ text-align: center;
   overflow-x: hidden;
 }
 
-.card > h1, .cardModal > h1, .cardCaixa > h1, .cardEstoque > h1, .cardMenuEstoque > h1, .cardMenuCaixa > h1, .cardFecha > h1 {
+.card > h1, .cardModal > h1, .cardCaixa > h1, .cardEstoque > h1, .cardMenuEstoque > h1, .cardMenuCaixa > h1, .cardFecha > h1, .cardMenuRelatorio > h1 {
   color: #BF8C2C;
   font-weight: 800;
   margin: 0 0 10px 0;
+}
+
+.subTitle {
+  border: 1px solid #bf8c2c55;
+  padding: 10px;
+  text-align: center;
+}
+
+.subTitle > h2 {
+  margin: 10px 0 ;
+  color: #bf8c2cdd;
+  font-size: 1.2rem;
 }
 
 .line, .lineFecha{
@@ -208,7 +219,7 @@ text-align: center;
   margin-left: 10px;
 }
 
-.menu-estoque, .menu-caixa {
+.menu-estoque, .menu-caixa, .menu-relatorios {
   width: 50%;
   padding: 16px 0px;
   margin: 25px;
@@ -441,6 +452,7 @@ tbody .venda {
 .active {
   display: block;
 }
+
 
 @media only screen and (max-width: 1400px) {
   .card-login {

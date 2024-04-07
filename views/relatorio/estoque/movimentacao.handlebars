@@ -1,0 +1,32 @@
+{{>navbar}}
+{{#if error_msg}}
+  <div class="invisible">{{error_msg}}</div>
+{{/if}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <div class="container">
+    <div class="card">
+      <h1>Relatório de movimentações de estoque</h1>
+      <div class="subTitle">
+        <h2>Filtrar relatório por periodo</h2>
+      <div class="msg" id="msg"><p id="msgtext"></p></div>
+      <div class="line">
+        <div class="textfield">
+          <label for="dateIni">*Data inicio</label>
+          <input type="text" name="dateIni" id="dateIni" class="date" placeholder="___/___/___  " autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="dateFim">*Data fim</label>
+          <input type="text" name="dateFim" id="dateFim" class="date" placeholder="___/___/___  " autocomplete="off"/>
+        </div>
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO</p>
+      </div>
+      </div>
+      <button class="btn-salvar" id="btnRelatorioEstoque">Gerar Relatório</button>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,16 @@
+{{>navbar}}
+{{#if error_msg}}
+  <div class="invisible">erro,{{error_msg}}</div>
+{{/if}}
+{{#if success_msg}}
+  <div class="invisible">sucesso,{{success_msg}}</div>
+{{/if}}
+ <div class="container">    
+    <div class="cardMenuRelatorio">
+      <h1>Menu de Relatórios</h1>
+      <div class="msg" id="msg"><p id="msgtext"></p></div>
+      <a  class="menu-relatorios" href="relatorios/venda">Relatorio de Venda</a>
+      <a  class="menu-relatorios" href="relatorios/estoque/controle">Relatorio de controle de estoque</a>
+      <a  class="menu-relatorios" href="relatorios/estoque/movimentacao">Relatorio de movimentação de estoque</a>
+    </div>
+  </div>

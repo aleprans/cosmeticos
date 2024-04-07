@@ -14,7 +14,7 @@ const login = require('./src/router/login')
 const caixa = require('./src/router/caixa')
 const estoque = require('./src/router/estoque')
 const usuarios = require('./src/router/usuarios')
-const financeiro = require('./src/router/financeiro')
+const relatorios = require('./src/router/relatorios')
 const logout = require('./src/router/logout')
 
 const app = express()
@@ -58,12 +58,12 @@ app.use(async (req, res, next) => {
 })
 
 //Rotas
-app.use('/', login)
+app.use('/', caixa)
 app.use('/login', login)
 app.use('/caixa', authenticated, caixa)
 app.use('/estoque', authenticated, estoque)
 app.use('/usuarios', eAdmin, usuarios)
-app.use('/financeiro', financeiro)
+app.use('/relatorios', eAdmin, relatorios)
 app.use('/logout',  logout)
 
 //Geral

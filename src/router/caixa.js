@@ -22,16 +22,17 @@ router.get('/abre', async (req, res) => {
   res.render('caixa', {produto, formaPaga})
 })
 
-router.get('/fecha', eAdmin, async (req, res) => {
+router.get('/fecha', async (req, res) => {
   let total = ''
   const vendas = await db.selectSpecific(6, 4, '0')
+  for(x = 0; x < vendas.length; x++){
+    vendas[x].dataVd = vendas[x].dataVd.toLocaleString('pt-br').slice(0,10)
+    vendas[x].valor = parseFloat(vendas[x].valor).toFixed(2).replace('.',',')
+  }
   const soma = await db.query('select sum(valor) total from vendas where status = 0')
   if(vendas[0]) {
     if(soma[0].total != null){
       total = String(soma[0].total.toFixed(2)).replace('.',',')
-    }
-    for(x = 0; x < vendas.length; x++){
-      vendas[x].valor = parseFloat(vendas[x].valor).toFixed(2).replace('.',',')
     }
     res.render('caixa/fechaCaixa', {vendas, total})
   }else
@@ -46,21 +47,21 @@ router.post('/venda', async (req, res) => {
   res.json(result)
 })
 
-router.post('/finVenda', async (req, res) => {
+router.post('/finVenda', eAdmin, async (req, res) => {
   let erro = 0
   const dados = req.body
   const user = req.user[0].id
-  const data = new Date()
-  const dtAtual = data.toLocaleString('pt-br').slice(0,10)
+  const data = new Date().toLocaleString('pt-br', {timeZone: 'America/Sao_Paulo'}).split(',')[0].split('/')
+  const dtAtual = data[2]+'-'+data[1]+'-'+data[0]
   const valorT = parseFloat(dados.vlTotal)
-  const dadosVenda = {valor: valorT.toFixed(2), data: dtAtual, usuario: user, status: 0, vlorigin: dados.valorT}
+  const dadosVenda = {valor: valorT.toFixed(2), data: dtAtual, usuario: user, status: 0, vlorigin: parseFloat(dados.valorT).toFixed(2)}
   const regVenda = await db.insert(6, dadosVenda)
   if(regVenda[0].affectedRows == 1){
     for( x = 0; x < dados.itens.length; x++){
 
       var veriQtde = await db.selectOneId(2, dados.itens[x][0])
       if(veriQtde[0].qtde >= dados.itens[x][3]) {
-        const it = {id: dados.itens[x][0], qtde: dados.itens[x][3], idVenda: regVenda[0].insertId, valorTItens: dados.itens[x][6]} 
+        const it = {id: dados.itens[x][0], qtde: dados.itens[x][3], idVenda: regVenda[0].insertId, valor: parseFloat(dados.itens[x][6]).toFixed(2)} 
         const regItVenda = await db.insert(5, it)
         if(regItVenda[0].affectedRows != 1) 
           erro = 1

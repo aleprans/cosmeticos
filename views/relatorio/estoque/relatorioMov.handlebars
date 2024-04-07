@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Relatório de movimentação de Estoque</h1>
+  <div class="data">Data: {{dtAtual}}</div>
+  <hr>
+  <div class="periodo">Periodo:&nbsp &nbsp{{dtIni}} &nbsp a &nbsp {{dtFim}}</div>
+  <hr>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Código</th>
+        <th>entrada / saida</th>
+        <th>Qtde</th>
+        <th>motivo | fornecedor - nota</th>
+        <th>Usuário</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each estoque}}
+        <tr>
+          <td>{{dtAtual}}</td>
+          <td>{{codigo}}</td>
+          <td>{{tpmov}}</td>
+          <td>{{qtde}}</td>
+          <td>
+            {{#if motivo}}
+              {{motivo}}
+            {{else}}
+              {{fornecedor}} - {{nota}}
+            {{/if}}
+          </td>
+          <td>{{nome}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+</body>
+</html>
+
+<style>
+  h1 {
+    text-align: center;
+    color: #BF8C2C;
+    text-shadow: 1px 1px #201b2c;
+  }
+
+  .data {
+    text-align: end;
+    color: #201b2c;
+  }
+
+  table {
+    border: 3px solid #BF8C2C;
+    width: 100%;
+    color: #222;
+  }
+
+  td, th {
+    text-align: center;
+    border: 1px solid #be9b5a;
+    margin: 0;
+    padding: 0;
+  }
+
+  hr {
+    border-color: #BF8C2C;
+  }
+
+  th{
+    background-color: #BF8C2C;
+  }
+</style>

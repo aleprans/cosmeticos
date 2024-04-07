@@ -25,6 +25,18 @@ $(document).ready(() => {
   if(resp.length > 1) {
     msgAlert(resp[1], resp[0])}
 
+  $('.date').datepicker({
+    regional: 'pt-BR'
+  })
+
+  $('#dateIni').change(function(){
+    console.log($(this).val())
+  })
+
+  $('#dateFim').change(function(){
+    console.log($(this).val())
+  })
+
 $('#usuario').keyup(function(e){
   const keycode = (e.keyCode ? e.keyCode : e.wich)
   if(keycode == 13){
@@ -500,7 +512,6 @@ $('#btnItens').click(function(){
 })
 
 $('#fechaCaixa').click(function(){
-  console.log($('#idVenda').val())
   if($('#idVenda').val() > 0) {
     $.ajax({
       url: 'fecha/caixa',
@@ -516,6 +527,20 @@ $('#fechaCaixa').click(function(){
       }
     })
   }
+})
+
+$('#btnRelatorioCaixa').click(function(){
+  if($('#dateIni').val() == '' || $('#dateFim').val() == ''){
+    msgAlert('Dados obrigatórios', 'erro')
+  }else
+    $('#form').off('submit').submit()
+})
+
+$('#btnRelatorioEstoque').click(function(){
+  if($('#dateIni').val() == '' || $('#dateFim').val() == ''){
+    msgAlert('Dados obrigatórios', 'erro')
+  }else
+    $('#form').off('submit').submit()
 })
 
 function calcularVenda(custo, lucro) {

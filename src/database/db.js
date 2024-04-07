@@ -50,8 +50,12 @@ async function createTables() {
     'id int NOT NULL AUTO_INCREMENT,'+
     'codigo varchar(12) NOT NULL,'+
     'qtde int DEFAULT 0,'+
-    'dtAtual varchar(10) ,'+
+    'dtAtual DATE ,'+
     'usuario INT ,'+
+    'tipo INT ,'+
+    'fornecedor varchar(255) ,'+
+    'nota varchar(12) ,'+
+    'motivo varchar(255) ,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(moviEstoque)
@@ -69,6 +73,7 @@ async function createTables() {
     'idItem INT NOT NULL,'+
     'qtdeItem INT NOT NULL,'+
     'idVenda INT NOT NULL,'+
+    'valor FLOAT NOT NULL,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(itensVendidos)
@@ -76,8 +81,10 @@ async function createTables() {
   const vendas = 'CREATE TABLE IF NOT EXISTS vendas ('+
     'id INT NOT NULL AUTO_INCREMENT,'+
     'valor FLOAT NOT NULL,'+
-    'dataVd VARCHAR(10) NOT NULL,'+
+    'dataVd DATE NOT NULL,'+
     'usuario INT NOT NULL,'+
+    'status INT NOT NULL,'+
+    'vlorigin FLOAT NOT NULL,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(vendas)
