@@ -58,7 +58,7 @@ app.use(async (req, res, next) => {
 })
 
 //Rotas
-app.use('/', caixa)
+app.use('/', login)
 app.use('/login', login)
 app.use('/caixa', authenticated, caixa)
 app.use('/estoque', authenticated, estoque)
