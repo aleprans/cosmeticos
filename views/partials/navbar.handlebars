@@ -6,18 +6,35 @@
     <div class="line3"></div>
   </div>
   <ul class="nav-list">
-    <li><a href="/caixa">Caixa</a></li>
+    <li><a href="/caixa">Caíxa</a></li>
     <li><a href="/estoque">Estoque</a></li>
-    <li><a href="/relatorios">Relatorios</a></li>
-    <li><a href="/usuarios">Usuarios</a></li>
+    <li><a href="/relatorios">Relatórios</a></li>
+    <li><a href="/usuarios">Usuários</a></li>
     <li><a href="/logout">Sair</a></li>
+    <li></li>
+    {{#each user}}
+    <li class="user">{{nome}}</li>
+    {{/each}}
   </ul>
 </nav>
+
     
 <style>
   * {
     margin: 0;
     padding: 0;
+  }
+
+  .user {
+    width: 130px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 1px solid #868092;
+    border-radius: 8px;
+    color: #4c4163;
+    padding: 3px 25px;
+    background-color: #bda06a;
   }
 
   a, .title {

@@ -90,7 +90,7 @@ router.post('/venda', async (req, res) => {
   const dtFim = dataFim[2]+'-'+dataFim[1]+'-'+dataFim[0]
   const result = await db.query(`SELECT v.*, u.nome from vendas v left join usuarios u on v.usuario = u.id WHERE v.datavd BETWEEN "${dtIni}" AND "${dtFim}";`)
   if(result.length  == 0){
-    res.render('relatorio/venda/venda', {msg: 'Não ha vendas para esse periodo', tipo: 'erro'})
+    res.render('relatorio/venda/venda', {msg: 'Não ha vendas para esse período', tipo: 'erro'})
   }else {
     const total = await db.query('SELECT SUM(valor) total from vendas;')
     total[0].total = total[0].total.toFixed(2)

@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
   bcrypt.genSalt(10, (erro, salt) => {
     bcrypt.hash(dados.senha, salt, async (erro, hash) => {
       if(erro){
-        res.render('usuarios', {tipo: 'erro', msg: 'Erro ao salvar usuario!'})
+        res.render('usuarios', {tipo: 'erro', msg: 'Erro ao salvar usuário!'})
       }
       dados.senha = hash
       const result = await db.insert(1, dados)
