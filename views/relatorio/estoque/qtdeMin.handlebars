@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Relatório de controle de Estoque</h1>
+  <h1>Relatório de Estoque em qtde mínima</h1>
   <div class="data">Data: {{dtAtual}}</div>
   <hr>
   <table>
@@ -21,7 +21,7 @@
     </thead>
     <tbody>
       {{#each estoque}}
-        <tr class="dados">
+        <tr>
           <td>{{codigo}}</td>
           <td>{{descricao}}</td>
           <td>{{fabricante}}</td>
@@ -31,24 +31,6 @@
       {{/each}}
     </tbody>
   </table>
-<script>
-const qtdeMin = document.querySelectorAll("#qtdeMin")
-const qtde = document.querySelectorAll("#qtde")
-const dados = document.querySelectorAll(".dados")
-for(x = 0; x < qtdeMin.length; x++){
-const qt = parseInt(qtde[x].textContent)
-const qtm = parseInt(qtdeMin[x].textContent)
-  if(qt < qtm){
-    dados[x].style.color = 'red'
-    dados[x].style.fontWeight = 'bold'
-    /*qtdeMin[x].style.color = 'red'
-    qtdeMin[x].style.fontWeight = 'bold'
-    qtde[x].style.color = 'red'
-    qtde[x].style.fontWeight = 'bold' */
-  }
-}
-
-</script>
 </body>
 </html>
 

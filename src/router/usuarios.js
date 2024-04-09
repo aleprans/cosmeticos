@@ -32,4 +32,10 @@ router.post('/', async (req, res) => {
   })
 })
 
+// router.post('/verify', (req, res) => {
+//   const verifyUser = req.body
+//   console.log(verifyUser)
+//   res.status(200)
+// })
+
 module.exports = router

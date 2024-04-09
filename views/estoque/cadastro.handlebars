@@ -26,6 +26,10 @@
           <label for="fabricante_estoque">*Fabricante</label>
           <input type="text" name="fabricante" id="fabricante_estoque" placeholder="Ex: Risque" autocomplete="off" />
         </div>
+        <div class="textfield">
+          <label for="qtdeMin_estoque">*Qtde minima</label>
+          <input type="number" name="qtdeMin" id="qtdeMin_estoque" value="0" min="0"/>
+        </div>
           <input type="hidden" name="qtde" id="qtde_estoque" value="0" />
       </div>
       <div class="line">
@@ -39,9 +43,8 @@
         </div>
         <div class="textfield cod">
           <label for="venda_estoque">Venda R$</label>
-          <input type="text" name="venda" id="venda_estoque" placeholder="0,00" readonly/>
+          <input type="text" name="venda" id="venda_estoque" placeholder="0,00" value="0" readonly/>
         </div>
-
       </div>
       <div class="lbl">
         <p>(*) OBRIGATÓRIO</p>

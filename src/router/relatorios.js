@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/venda', (req, res) => {
-  res.render('relatorio/venda/venda')
+  res.render('relatorio/venda')
 })
 
 router.get('/estoque/controle', async (req, res) => {
@@ -41,9 +41,37 @@ router.get('/estoque/controle', async (req, res) => {
 })
 
 router.get('/estoque/movimentacao', (req, res) => {
-  res.render('relatorio/estoque/movimentacao')
+  res.render('relatorio/movimentacao')
 })
 
+router.get('/estoque/qtdeMin', async (req, res) => {
+const dtAtual = new Date().toLocaleString('pt-br', {timeZone: 'America/Sao_Paulo'}).split(',')[0]
+const result = await db.query('SELECT * FROM estoque WHERE qtde <= qtdeMin;')
+res.render('relatorio/estoque/qtdeMin', {layout: false, estoque: result, dtAtual}, (err, html)=> {
+  if(err){
+    console.log(err)
+    resposta(false)
+  }else {
+    pdf.create(html).toFile(`./src/public/PDFs/estoqueqtdeMin.pdf`,(err, res) => {
+      if(err)
+        resposta(false)
+      else
+        if(fs.existsSync(res.filename)){
+          resposta(true, res)
+        }
+    })
+  }
+})
+function resposta(status, resp = ''){
+  if(!status){
+    req.flash('error_msg', 'Falha ao gerar relatório!')
+    res.redirect('/relatorios')
+  }else{
+    let file = resp.filename
+    res.sendFile(file)
+  }
+}
+})
 
 router.post('/estoque/movimentacao', async (req, res) => {
   const datas = req.body

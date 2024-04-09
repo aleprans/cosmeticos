@@ -42,6 +42,7 @@ async function createTables() {
     'lucro varchar(6) NOT NULL,'+
     'venda FLOAT NOT NULL,'+
     'qtde int DEFAULT 0,'+
+    'qtdeMin int DEFAULT 0,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(tableEstoque)
@@ -95,7 +96,7 @@ async function createTables() {
 const tabelas = [
   ['clientes','nome', 'cpf', 'endereco', 'telefone', 'email'], // 0
   ['usuarios', 'nome', 'usuario', 'cpf', 'email', 'eadmin', 'senha'], // 1
-  ['estoque', 'codigo', 'descricao', 'fabricante', 'qtde', 'custo', 'lucro', 'venda'], // 2
+  ['estoque', 'codigo', 'descricao', 'fabricante', 'qtdeMin', 'qtde', 'custo', 'lucro', 'venda' ], // 2
   ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario', 'tipo', 'fornecedor', 'nota', 'motivo'], // 3
   ['formPagamentos', 'codigo', 'descricao'], // 4
   ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda', 'valor'], // 5

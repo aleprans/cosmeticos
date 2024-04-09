@@ -21,7 +21,7 @@ $(document).ready(() => {
   var valorT = 0
   var itemCaixa = []
   var resp = $('.invisible').text().split(',')
-  
+
   if(resp.length > 1) {
     msgAlert(resp[1], resp[0])}
 
@@ -69,13 +69,6 @@ $('#cpfUsuario').blur(function() {
 $('#nomeUsuario').blur(function() {
   if($(this).val().length < 5) {
     msgAlert('Nome inválido! <br> Minimo 5 caracteres', 'erro')
-    $(this).focus()
-  }
-})
-
-$('#cadUsuario').blur(function() {
-  if($(this).val().length < 5) {
-    msgAlert('Nome de usuario inválido! <br> Minimo 5 caracteres', 'erro')
     $(this).focus()
   }
 })
@@ -158,6 +151,7 @@ $('#codigo_estoque').blur(function(){
           $('#lucro_estoque').val(json[0].lucro)
           $('#venda_estoque').val(json[0].venda)
           $('#id_estoque').val(json[0].id)
+          $('#qtdeMin_estoque').val(json[0].qtdeMin)
           $('#isSave_estoque').val('false')
         }else {
           $('#qtde_estoque').removeAttr('readonly')
@@ -239,6 +233,7 @@ $('.btn-select-prod').click(function() {
                 $('#desc_estoque').val(json[0].descricao)
                 $('#fabricante_estoque').val(json[0].fabricante)
                 $('#qtde_estoque').val(json[0].qtde)
+                $('#qtdeMin_estoque').val(json[0].qtdeMin)
                 $('#custo_estoque').val(json[0].custo)
                 $('#lucro_estoque').val(json[0].lucro)
                 $('#venda_estoque').val(json[0].venda)
@@ -348,6 +343,7 @@ $('#input-select-prod').keyup(function(e) {
           $('#desc_estoque').val(json[0].descricao)
           $('#fabricante_estoque').val(json[0].fabricante)
           $('#qtde_estoque').val(json[0].qtde)
+          $('#qtdeMin_estoque').val(json[0].qtdeMin)
           $('#custo_estoque').val(json[0].custo)
           $('#lucro_estoque').val(json[0].lucro)
           $('#venda_estoque').val(json[0].venda)
@@ -563,7 +559,10 @@ function validarEstoque(){
     msgAlert('Custo inválido!', 'erro')
     return false
   }else if($('#lucro_estoque').val() < 1) {
-    msgAlert('Lucro inválido!ee', 'erro')
+    msgAlert('Lucro inválido!', 'erro')
+    return false
+  }else if($('#qtdeMin_estoque').val() < 0) {
+    msgAlert('Qtde minima inválida!', 'erro')
     return false
   }
   return true
