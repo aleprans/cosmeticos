@@ -171,7 +171,7 @@ text-align: center;
   width: 30%;
 }
 
-.textfield > input, .btnMenu, select {
+.textfield > input, .btnMenu, select, select-cliente {
   width: 100%;
   border: none;
   border-radius: 10px;
@@ -184,7 +184,7 @@ text-align: center;
   box-sizing: border-box;
 }
 
-.textfield > label, select > label {
+.textfield > label, select > label, select-cliente > label {
   color: #f0ffffde;
   margin-bottom: 10px;
 }
@@ -193,7 +193,7 @@ text-align: center;
   color: #f0ffff94;
 }
 
-.btn-salvar ,.btn-login, .btn-finalizar, .btn-finalizar-compra {
+.btn-salvar ,.btn-login, .btn-finalizar, .btn-finalizar-compra, .btnTrocarSenha {
   width: 100%;
   padding: 16px 5px;
   margin: 25px;
@@ -207,6 +207,14 @@ text-align: center;
   background: #BF8C2C;
   cursor: pointer;
   box-shadow: 0px 10px 40px -12px ;
+}
+
+.btnTrocarSenha {
+  width: auto;
+  padding: 5px;
+  font-size: 0.5rem;
+  margin-top: -12px;
+  margin-right: 0;
 }
 
 .btn-finalizar {
@@ -262,12 +270,12 @@ text-align: center;
   overflow: auto;
 }
 
-.select , .select-pg, .select-acesso, .select-prod{
+.select , .select-pg, .select-acesso, .select-prod, .select-cliente{
   position: relative;
   width: 100%;
 }
 
-.btn-select, .btn-select-pg, .btn-select-acesso, .btn-select-prod {
+.btn-select, .btn-select-pg, .btn-select-acesso, .btn-select-prod, .btn-select-cliente {
   padding: 15px 8px;
   width: 100%;
   border-radius: 10px;
@@ -277,11 +285,11 @@ text-align: center;
   color: #f0ffff94;
 }
 
-.btn-select span, .btn-select-pg span, .btn-select-acesso span, .btn-select-prod span{
+.btn-select span, .btn-select-pg span, .btn-select-acesso span, .btn-select-prod span, .btn-select-cliente span{
   width: 100%;
 }
 
-.select-content, .select-content-pg, .select-content-acesso, .select-content-prod{
+.select-content, .select-content-pg, .select-content-acesso, .select-content-prod, .select-content-cliente{
   border: 1px solid gray;
   border-radius: 5px;
   padding: 10px;
@@ -294,7 +302,7 @@ text-align: center;
   color: #f0ffff94;
 }
 
-.select-content input, .select-content-pg input, .select-content-prod input{
+.select-content input, .select-content-pg input, .select-content-prod input, .select-content-cliente input{
   padding: 3px;
   width: 90%;
   margin: 5px;
@@ -303,7 +311,7 @@ text-align: center;
   border-radius: 5px;
 }
 
-.select-content .options, .select-content-pg .options-pg, .select-content-acesso .options-acesso, .select-content-prod .options-prod{
+.select-content .options, .select-content-pg .options-pg, .select-content-acesso .options-acesso, .select-content-prod .options-prod, .select-content-cliente .options-cliente{
   max-height: 250px;
   list-style: none;
   overflow: auto;
@@ -311,7 +319,7 @@ text-align: center;
   font-size: 14px;
 }
 
-.options li, .options-pg li, .options-acesso li, .options-prod{
+.options li, .options-pg li, .options-acesso li, .options-prod li, .options-cliente li{
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
@@ -320,12 +328,12 @@ text-align: center;
   border-radius: 2px;
 }
 
-.options li:hover, .options-pg li:hover, .options-acesso li:hover, .options-prod li:hover{
+.options li:hover, .options-pg li:hover, .options-acesso li:hover, .options-prod li:hover, .options-cliente li:hover{
   background-color: #aaa;
   color: #000;
 }
 
-.select .active, .select-pg .active, .select-acesso .active, .select-prod .active{
+.select .active, .select-pg .active, .select-acesso .active, .select-prod .active, .select-cliente .active{
   display: block;
 }
 

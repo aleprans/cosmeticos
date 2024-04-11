@@ -11,6 +11,7 @@ const {authenticated} = require('./helpers/authenticated')
 const {eAdmin} = require('./helpers/eAdmin')
 
 const login = require('./src/router/login')
+const clientes = require('./src/router/clientes')
 const caixa = require('./src/router/caixa')
 const estoque = require('./src/router/estoque')
 const usuarios = require('./src/router/usuarios')
@@ -60,10 +61,11 @@ app.use(async (req, res, next) => {
 //Rotas
 app.use('/', login)
 app.use('/login', login)
+app.use('/clientes', authenticated, clientes)
 app.use('/caixa', authenticated, caixa)
 app.use('/estoque', authenticated, estoque)
-app.use('/usuarios', eAdmin, usuarios)
-app.use('/relatorios', eAdmin, relatorios)
+app.use('/usuarios', authenticated, usuarios)
+app.use('/relatorios', authenticated, relatorios)
 app.use('/logout',  logout)
 
 //Geral

@@ -1,0 +1,42 @@
+{{>navbar}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <input type="hidden" id="isInsert" name="isInsert">
+  <input type="hidden" id="idCliente" name="idCliente">
+  <div class="container">
+    <div class="card">
+      <h1>Cadastro de Clientes</h1>
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
+      <div class="line">
+        <div class="textfield">
+          <label for="cpf">*CPF</label>
+          <input type="text" name="cpf" id="cpfCliente" placeholder="Ex: 123.456.789-00" autocomplete="off" maxlength="14"/>
+        </div>
+        <div class="textfield">
+          <label for="nome">*Nome</label>
+          <input type="text" name="nome" id="nomeCliente" placeholder="Ex: João Oliveira | mínimo 5 caracteres" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="email">*Email</label>
+          <input type="email" name="email" id="emailCliente" placeholder="Ex: email@email.com.br" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="line">
+        <div class="textfield">
+          <label for="endereco">Endereco</label>
+          <input type="text" name="endereco" id="enderecoCliente" placeholder="Ex. Rua João Silva, 50 Topolandia - SS" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="tel">*Telefone</label>
+          <input type="text" name="telCliente" id="telCliente" placeholder="Ex. (12) 9988-5566" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO</p>
+      </div>
+      <button class="btn-salvar" id="btnSalvarCliente">Salvar</button>
+    </div>
+  </div>
+</form>

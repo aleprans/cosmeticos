@@ -6,6 +6,7 @@
   <div class="invisible">{{tipo}},{{msg}}</div>
 {{/if}}
 <input type="text" id="itens-select"  class="invisible" value="{{produto}}">
+<input type="text" id="itens-select-cliente"  class="invisible" value="{{cliente}}">
 <input type="text" id="formPg-select"  class="invisible" value="{{formaPaga}}">
 <form action="" method="post" id="form">
 </form>
@@ -41,7 +42,21 @@
     <div class="cardCaixa ">
       <h1>Caixa</h1>
       <div class="msg" id="msg"><p id="msgtext"></p></div>
+      
       <div class="line">
+        <div class="textfield">
+          <label for="cliente">Cliente</label>
+          <div class="select-cliente">
+            <div class="btn-select-cliente">
+              <span>Balcão</span>
+            </div>
+            <div class="select-content-cliente">
+              <input type="text" name="cliente" id="input-select-cliente">
+              <ul class="options-cliente">
+              </ul>
+            </div>
+          </div>
+        </div>
         <div class="textfield">
           <label for="item-estoque">Produto</label>
           <div class="select">

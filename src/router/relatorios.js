@@ -3,12 +3,13 @@ const router = express.Router()
 const db = require('../database/db')
 const pdf = require('html-pdf')
 const fs = require('fs')
+const {eAdmin} = require('../../helpers/eAdmin')
 
 router.get('/', (req, res) => {
   res.render('relatorio/menu')
 })
 
-router.get('/venda', (req, res) => {
+router.get('/venda', eAdmin, (req, res) => {
   res.render('relatorio/venda')
 })
 
@@ -40,7 +41,7 @@ router.get('/estoque/controle', async (req, res) => {
   }
 })
 
-router.get('/estoque/movimentacao', (req, res) => {
+router.get('/estoque/movimentacao', eAdmin, (req, res) => {
   res.render('relatorio/movimentacao')
 })
 

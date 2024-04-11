@@ -86,6 +86,7 @@ async function createTables() {
     'usuario INT NOT NULL,'+
     'status INT NOT NULL,'+
     'vlorigin FLOAT NOT NULL,'+
+    'cliente int default 0,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(vendas)
@@ -94,13 +95,13 @@ async function createTables() {
 }
 
 const tabelas = [
-  ['clientes','nome', 'cpf', 'endereco', 'telefone', 'email'], // 0
+  ['clientes', 'cpf', 'nome', 'email', 'endereco', 'telefone'], // 0
   ['usuarios', 'nome', 'usuario', 'cpf', 'email', 'eadmin', 'senha'], // 1
   ['estoque', 'codigo', 'descricao', 'fabricante', 'qtdeMin', 'qtde', 'custo', 'lucro', 'venda' ], // 2
   ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario', 'tipo', 'fornecedor', 'nota', 'motivo'], // 3
   ['formPagamentos', 'codigo', 'descricao'], // 4
   ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda', 'valor'], // 5
-  ['vendas', 'valor', 'dataVd', 'usuario', 'status', 'vlorigin'] // 6
+  ['vendas', 'valor', 'dataVd', 'usuario', 'status', 'vlorigin', 'cliente'] // 6
 ]
 
 async function signIn(tab, usuario) {

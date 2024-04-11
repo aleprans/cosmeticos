@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../database/db')
-const {eAdmin} = require('../../helpers/eAdmin')
+// const {eAdmin} = require('../../helpers/eAdmin')
 
 // Front-end
 router.get('/', (req, res) => {
@@ -10,16 +10,21 @@ router.get('/', (req, res) => {
 
 router.get('/abre', async (req, res) => {
   const prod = await db.query('SELECT * FROM estoque WHERE qtde > 0')
+  const clientes = await db.query('SELECT * FROM clientes')
   const formPg = await db.selectAll(4)
   let produto = []
   let formaPaga = []
+  let cliente = []
   prod.forEach(element => {
     produto.push(`${element.codigo} - ${element.descricao}`)
   });
   formPg.forEach(element => {
     formaPaga.push(`${element.codigo} - ${element.descricao}`)
   });
-  res.render('caixa', {produto, formaPaga})
+  clientes.forEach(element => {
+    cliente.push(`${element.nome} - ${element.cpf}`)
+  });
+  res.render('caixa', {produto, formaPaga, cliente})
 })
 
 router.get('/fecha', async (req, res) => {
@@ -47,14 +52,14 @@ router.post('/venda', async (req, res) => {
   res.json(result)
 })
 
-router.post('/finVenda', eAdmin, async (req, res) => {
+router.post('/finVenda', async (req, res) => {
   let erro = 0
   const dados = req.body
   const user = req.user[0].id
   const data = new Date().toLocaleString('pt-br', {timeZone: 'America/Sao_Paulo'}).split(',')[0].split('/')
   const dtAtual = data[2]+'-'+data[1]+'-'+data[0]
   const valorT = parseFloat(dados.vlTotal)
-  const dadosVenda = {valor: valorT.toFixed(2), data: dtAtual, usuario: user, status: 0, vlorigin: parseFloat(dados.valorT).toFixed(2)}
+  const dadosVenda = {valor: valorT.toFixed(2), data: dtAtual, usuario: user, status: 0, vlorigin: parseFloat(dados.valorT).toFixed(2), cliente: dados.idCliente}
   const regVenda = await db.insert(6, dadosVenda)
   if(regVenda[0].affectedRows == 1){
     for( x = 0; x < dados.itens.length; x++){
@@ -86,7 +91,6 @@ router.post('/finVenda', eAdmin, async (req, res) => {
     }else if(erro == 0) 
       res.json({status: true, msg: 'Venda registrada com sucesso!'})
   }else res.json({status: false, msg: 'Erro ao registrar venda!'})
-
 })
 
 router.post('/qtdeEstoque', async (req, res) => {

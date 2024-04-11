@@ -2,57 +2,101 @@
 {{#if msg}}
   <div class="invisible">{{tipo}},{{msg}}</div>
 {{/if}}
-<form action="" method="post" id="form">
-  <div class="container">
-    <div class="card">
-      <h1>Cadastro de Usuários</h1>
-        <div class="msg" id="msg"><p id="msgtext"></p></div>
-      <div class="line">
-        <div class="textfield">
-          <label for="nome">*Nome</label>
-          <input type="text" name="nome" id="nomeUsuario" placeholder="Ex: João Oliveira | mínimo 5 caracteres" autocomplete="off"/>
-        </div>
-        <div class="textfield">
-          <label for="usuario">*Nome de Usuário</label>
-          <input type="text" name="usuario" id="cadUsuario" placeholder="Ex: JOliver | mínimo 5 caracteres" autocomplete="off"/>
+ {{#if error_msg}}
+  <div class="invisible">erro,{{error_msg}}</div>
+{{/if}}
+ {{#if success_msg}}
+  <div class="invisible">sucesso,{{success_msg}}</div>
+{{/if}}
+{{#each user}}
+  {{#if eadmin}}
+    <form action="" method="post" id="form">
+      <input type="hidden" id="isInsert" name="isInsert" value="">
+      <input type="hidden" name="isToggle" id="isToggle" value="">
+      <input type="hidden" id="idUsuario" name="idUsuario" value="{{id}}">
+      <input type="hidden" id="idUsuarioSelected" name="idUsuarioSelected" value="">
+      <div class="container">
+        <div class="card">
+          <h1>Cadastro de Usuários</h1>
+            <div class="msg" id="msg"><p id="msgtext"></p></div>
+          <div class="line">
+            <div class="textfield">
+              <label for="usuario">*Nome de Usuário</label>
+              <input type="text" name="usuario" id="cadUsuario" placeholder="Ex: JOliver | mínimo 5 caracteres" autocomplete="off"/>
+            </div>
+            <div class="textfield">
+              <label for="nome">*Nome</label>
+              <input type="text" name="nomeUsuario" id="nomeUsuario" placeholder="Ex: João Oliveira | mínimo 5 caracteres" autocomplete="off"/>
+            </div>
+          </div>
+          <div class="line">
+            <div class="textfield">
+              <label for="cpf">*CPF</label>
+              <input type="text" name="cpfUsuario" id="cpfUsuario" placeholder="Ex: 123.456.789-00" autocomplete="off" maxlength="14"/>
+            </div>
+            <div class="textfield">
+              <label for="email">*Email</label>
+              <input type="email" name="emailUsuario" id="emailUsuario" placeholder="Ex: email@email.com.br" autocomplete="off"/>
+            </div>
+            <div class="textfield">
+              <label for="form-acesso">*Nível de acesso</label>
+              <div class="select-acesso">
+                <input type="text" name="nivelUsuario" id="nivelAcesso" class="btn-select-acesso" placeholder="Selecione o nivel de acesso" readonly/>
+                <div class="select-content-acesso">
+                  <ul class="options-acesso">
+                    <li class="li">Administrador</li>
+                    <li class="li">Normal</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lbl">
+            <p>(*) OBRIGATÓRIO</p>
+          </div>
+          <div class="modal">
+            <div class="cardModal">
+            <div class="textfield">
+              <label for="senha">*Senha</label>
+              <input type="password" name="senhaUsuario" id="cadSenha" placeholder="Mínino de 6 digitos." autocomplete="off"/>
+            </div>
+            <div class="textfield">
+              <label for="conf">*Confirmação de senha</label>
+              <input type="password" id="conf" placeholder="Confirme a senha!" autocomplete="off"/>
+            </div>
+            <div class="line">
+              <button class="btn-salvar" id="btnAlterarSenha">Alterar senha</button>
+              <button class="btn-salvar" id="btnCancelAlterarSenha">Voltar</button>
+            </div>
+            </div>
+          </div>
+          <button class="btn-salvar" id="btnSalvarUsuario">Salvar</button>
+          <button class="btnTrocarSenha" id="btnTrocarSenha">Trocar própria senha</button>
         </div>
       </div>
-      <div class="line">
-        <div class="textfield">
-          <label for="cpf">*CPF</label>
-          <input type="text" name="cpf" id="cpfUsuario" placeholder="Ex: 123.456.789-00" autocomplete="off" maxlength="14"/>
-        </div>
-        <div class="textfield">
-          <label for="email">*Email</label>
-          <input type="email" name="email" id="email" placeholder="Ex: email@email.com.br" autocomplete="off"/>
-        </div>
-        <div class="textfield">
-          <label for="form-acesso">*Nível de acesso</label>
-          <div class="select-acesso">
-            <input type="text" name="nivel" id="nivelAcesso" class="btn-select-acesso" placeholder="Selecione o nivel de acesso" readonly/>
-            <div class="select-content-acesso">
-              <ul class="options-acesso">
-                <li class="li">Administrador</li>
-                <li class="li">Normal</li>
-              </ul>
-            </div>
+    </form>
+  {{else}}
+    <form action="" method="post" id="form">
+      <div class="container">
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
+        <input type="hidden" name="idUsuario" id="idUsuario" value="{{id}}">
+        <input type="hidden" name="isToggle" id="isToggle" value=true >
+        <div class="cardModal">
+          <div class="textfield">
+            <label for="senha">*Senha</label>
+            <input type="password" name="senhaUsuario" id="cadSenha" placeholder="Mínino de 6 digitos." autocomplete="off"/>
+          </div>
+          <div class="textfield">
+            <label for="conf">*Confirmação de senha</label>
+            <input type="password" id="conf" placeholder="Confirme a senha!" autocomplete="off"/>
+          </div>
+          <div class="line">
+            <button class="btn-salvar" id="btnSalvarSenha">Salvar</button>
+            <button class="btn-salvar" id="btnCancelAlterarSenha">Voltar</button>
           </div>
         </div>
       </div>
-      <div class="line">
-        <div class="textfield">
-          <label for="senha">*Senha</label>
-          <input type="password" name="senha" id="senha" placeholder="Mínino de 6 digitos." autocomplete="off"/>
-        </div>
-        <div class="textfield">
-          <label for="conf">*Confirmação de senha</label>
-          <input type="password" id="conf" placeholder="Confirme a senha!" autocomplete="off"/>
-        </div>
-      </div>
-      <div class="lbl">
-        <p>(*) OBRIGATÓRIO</p>
-      </div>
-      <button class="btn-salvar" id="btnSalvarUsuario">Salvar</button>
-    </div>
-  </div>
-</form>
+    </form>
+  {{/if}}
+
+{{/each}}
