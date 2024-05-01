@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Relatório de Vendas</h1>
+  <h1>Relatório de Lucro (liquido / bruto)</h1>
   <div class="data">Data: {{dtAtual}}</div>
   <hr>
   <div class="periodo">Periodo:&nbsp &nbsp{{dtIni}} &nbsp a &nbsp {{dtFim}}</div>
@@ -14,29 +14,16 @@
   <table>
       <thead>
         <tr>
-          <th>N° da venda</th>
-          <th>Data da venda</th>
-          <th>Valor da venda</th>
-          <th>Vendedor</th>
+          <th>Liquído</th>
+          <th>Bruto</th>
         </tr>
       </thead>
       <tbody>
-        {{#each vendas}}
           <tr>
-            <td>{{id}}</td>
-            <td>{{dataVd}}</td>
-            <td>R$ {{vlorig}}</td>
-            <td>{{nome}}</td>
+            <td>R$ {{lucroLq}}</td>
+            <td>R$ {{lucroBt}}</td>
           </tr>
-        {{/each}}
       </tbody>
-      <tfoot>
-        <tr style="height: 5px;"></tr>
-        <tr>
-          <td colspan="2"> Total das vendas no periodo</td>
-          <td colspan="2">R$ &nbsp {{total}}</td>
-        </tr>
-      </tfoot>
   </table>
 
 </body>
@@ -65,10 +52,12 @@
   }
 
   td, th {
+    width: 50%;
     text-align: center;
     border: 1px solid #be9b5a;
     margin: 0;
-    padding: 0;
+    padding: 5px;
+    font-size: 1.5rem;
   }
 
   hr {
@@ -79,10 +68,4 @@
     background-color: #BF8C2C;
   }
 
-  tfoot > tr{
-    padding: 100px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    background-color: #be9b5a;
-  }
 </style>

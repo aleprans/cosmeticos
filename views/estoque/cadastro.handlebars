@@ -14,9 +14,8 @@
         <div class="msg" id="msg"><p id="msgtext"></p></div>
         <div class="line">
         <div class="textfield cod">
-
           <label for="codigo_estoque">*Código</label>
-          <input type="text" name="codigo" id="codigo_estoque" placeholder="Ex: EA123" autocomplete="off"/>
+          <input type="text" name="codigo" id="codigo_estoque" placeholder="Ex: EA123" autocomplete="off" maxlength="12"/>
         </div>
         <div class="textfield">
           <label for="descricao_estoque">*Descrição</label>
@@ -26,13 +25,13 @@
           <label for="fabricante_estoque">*Fabricante</label>
           <input type="text" name="fabricante" id="fabricante_estoque" placeholder="Ex: Risque" autocomplete="off" />
         </div>
-        <div class="textfield">
-          <label for="qtdeMin_estoque">*Qtde minima</label>
+        <div class="textfield cod">
+          <label for="qtdeMin_estoque">*Qtde min</label>
           <input type="number" name="qtdeMin" id="qtdeMin_estoque" value="0" min="0"/>
         </div>
-          <input type="hidden" name="qtde" id="qtde_estoque" value="0" />
+          {{!-- <input type="hidden" name="qtde" id="qtde_estoque" value="0" /> --}}
       </div>
-      <div class="line">
+      {{!-- <div class="line">
         <div class="textfield cod">
           <label for="custo_estoque">*Custo R$</label>
           <input type="text" name="custo" id="custo_estoque" placeholder="Ex: 1,50" autocomplete="off"/>
@@ -45,11 +44,11 @@
           <label for="venda_estoque">Venda R$</label>
           <input type="text" name="venda" id="venda_estoque" placeholder="0,00" value="0" readonly/>
         </div>
-      </div>
+      </div> --}}
       <div class="lbl">
         <p>(*) OBRIGATÓRIO</p>
       </div>
-      <button class="btn-salvar" id="btnSalvar_estoque">Salvar</button>
+      <input type="submit" class="btn-salvar" id="btnSalvar_estoque" value="Salvar" />
     </div>
   </div>
 </form>

@@ -1,0 +1,49 @@
+{{>navbar}}
+{{#if error_msg}}
+  <div class="invisible">{{error_msg}}</div>
+{{/if}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <input type="hidden" name="fornecedor" id="fornecedor">
+  <input type="hidden" id="forn-select">
+  <div class="container">
+    <div class="card">
+      <h1>Relatório por fornecedor</h1>
+      <div class="subTitle">
+        <h2>Filtrar relatório por periodo</h2>
+      <div class="msg" id="msg"><p id="msgtext"></p></div>
+      <div class="line">
+        <div class="textfield">
+          <label for="btn-select-forn">Fornecedor</label>
+          <div class="select-forn">
+            <div class="btn-select-forn">
+              <span>Selecione um fornecedor</span>
+            </div>
+            <div class="select-content-forn">
+              <input type="text" id="input-select-forn">
+              <ul class="options-forn">
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="textfield">
+          <label for="dateIni">*Data início</label>
+          <input type="text" name="dateIni" id="dateIni" class="date" placeholder="___/___/___  " autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="dateFim">*Data fim</label>
+          <input type="text" name="dateFim" id="dateFim" class="date" placeholder="___/___/___  " autocomplete="off"/>
+        </div>
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO</p>
+      </div>
+      </div>
+      <button class="btn-salvar" id="btnRelatorioFornecedor">Gerar Relatório</button>
+    </div>
+  </div>
+</form>

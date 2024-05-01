@@ -5,11 +5,21 @@
  {{#if success_msg}}
   <div class="invisible">sucesso,{{success_msg}}</div>
 {{/if}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
  <div class="container">    
     <div class="cardMenuCaixa">
-      <h1>Menu de controle do caixa</h1>
+      <h1>Menu de controle Financeiro</h1>
       <div class="msg" id="msg"><p id="msgtext"></p></div>
-      <a  class="menu-caixa" href="caixa/abre">Abrir Caixa</a>
-      <a  class="menu-caixa" href="caixa/fecha">Fechar Caixa</a>
+      <div class="line">
+        <a  class="menu-caixa" href="caixa/abre">Abrir Caixa</a>
+        <a  class="menu-caixa" href="caixa/fecha">Fechar Caixa</a>
+        <a  class="menu-caixa" href="caixa/saida">Saida Caixa</a>
+      </div>
+      <div class="line">
+        <a  class="menu-caixa" href="caixa/formPag">Formas de pagamento</a>
+        <a  class="menu-caixa" href="caixa/contasFixas">Contas fixas</a>
+      </div>
     </div>
   </div>

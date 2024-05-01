@@ -1,0 +1,32 @@
+{{>navbar}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <input type="hidden" id="isInsert" name="isInsert">
+  <input type="hidden" id="id" name="id">
+  <div class="container">
+    <div class="card">
+      <h1>Cadastro de Formas de pagamento</h1>
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
+      <div class="line">
+        <div class="textfield">
+          <label for="codigo">**Código</label>
+          <input type="text" name="codigo" id="formCodigo" placeholder="Ex:001" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="descricao">**Descrição</label>
+          <input type="text" name="descricao" id="formDescricao" placeholder="Ex: Dinheiro sem desconto" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="desc">*Desconto %</label>
+          <input type="number" name="desconto" id="formDesconto" value="0" placeholder="Ex: 10.5" autocomplete="off" min-value="0"/>
+        </div>
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO (**) Minino de 3 caracteres</p>
+      </div>
+      <button class="btn-salvar" id="btnSalvarFormPag">Salvar</button>
+    </div>
+  </div>
+</form>

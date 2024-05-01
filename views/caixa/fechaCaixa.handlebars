@@ -12,7 +12,7 @@
         <div class="textfield">
           <div class="lineFecha">
           <button class="btnFecha" id="fechaCaixa" >Fechar Caixa</button>
-          <div class="vlTotal">
+          <div>
           <label class="lbFechaTotal">Total do caixa</label>
           <label class="lbFechaTotal">R$ {{total}}</label>
           </div>
@@ -32,7 +32,7 @@
               <tr>
                 <td class="lf1">{{id}}</td>
                 <td class="lf2">{{dataVd}}</td>
-                <td class="lf3 lf13">R$ {{valor}}</td>
+                <td class="lf3 lf13">R$ {{vlorig}}</td>
               </tr>
               <tr><td colspan="3" class="col-itens" >
                 <table class="tab-fechaItens">
@@ -44,7 +44,6 @@
                     </tr>
                   </thead>
                   <tbody class="venda" venda="{{id}}">
-                    
                   </tbody>
                 </table>
               </td></tr>

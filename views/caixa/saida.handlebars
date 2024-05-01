@@ -1,0 +1,26 @@
+{{>navbar}}
+{{#if msg}}
+  <div class="invisible">{{tipo}},{{msg}}</div>
+{{/if}}
+<form action="" method="post" id="form">
+  <div class="container">
+    <div class="card">
+      <h1>Saida manual do caixa</h1>
+        <div class="msg" id="msg"><p id="msgtext"></p></div>
+      <div class="line">
+        <div class="textfield">
+          <label for="motivo">**Motivo</label>
+          <input type="text" name="motivo" id="motivoSaida" placeholder="Ex: Almoço" autocomplete="off"/>
+        </div>
+        <div class="textfield">
+          <label for="vlSaida">*Valor</label>
+          <input type="text" name="vlSaida" id="vlSaida" placeholder="Ex: 10,50" autocomplete="off" min-value="1"/>
+        </div>
+      </div>
+      <div class="lbl">
+        <p>(*) OBRIGATÓRIO (**) Minino de 3 caracteres</p>
+      </div>
+      <button class="btn-salvar" id="btnSalvarSaida">Salvar</button>
+    </div>
+  </div>
+</form>

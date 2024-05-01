@@ -6,10 +6,10 @@ router.get('/', (req, res) => {
   res.render('clientes')
 })
 
-router.post('/pesCPF', async (req, res) => {
+router.post('/pesTel', async (req, res) => {
   const dados = req.body
-  const cpf = dados.cpf.replace(/[^0-9]/g,'')
-  const result = await db.selectSpecific(0, 1, cpf)
+  const tel = dados.tel.replace(/[^0-9]/g,'')
+  const result = await db.selectSpecific(0, 5, tel)
   if(result.length > 0)
     res.json({status: true, dados: result[0]})
   else
@@ -25,22 +25,15 @@ router.post('/', async (req, res) => {
   let result = []
   if(dados.isInsert === true){
     delete dados.isInsert
-    result = await db.insert(0, dados)
+    result = await db.insert(0, {cpf: dados.cpf, nome: dados.nome, email: dados.email, end: dados.endereco, tel: dados.telCliente})
   }else {
     delete dados.isInsert
-    result = await db.update(0, idCliente, dados)
+    result = await db.update(0, idCliente, {cpf: dados.cpf, nome: dados.nome, email: dados.email, end: dados.endereco, tel: dados.telCliente})
   }
   if(result[0].affectedRows == 1)
     res.render('clientes', {msg: 'Dados salvos com sucesso!', tipo: 'sucesso'})
   else
     res.render('clientes', {msg: 'Falha ao salvar dados!', tipo: 'erro'})
-})
-
-router.post('/findCpf', async (req, res) => {
-  const cpf = req.body
-  const dados = cpf.cpf.split('-')
-  const result = await db.selectSpecific(0, 1, dados[0])
-  res.json({status: true, result})
 })
 
 module.exports = router

@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Relatório de movimentação de Estoque</h1>
+  <h1>Relatório de Movimentação de Estoque</h1>
   <div class="data">Data: {{dtAtual}}</div>
   <hr>
   <div class="periodo">Periodo:&nbsp &nbsp{{dtIni}} &nbsp a &nbsp {{dtFim}}</div>
@@ -19,7 +19,7 @@
         <th>entrada / saída</th>
         <th>Qtde</th>
         <th>motivo | fornecedor - nota</th>
-        <th>Usuário</th>
+        <th class="user">Usuário</th>
       </tr>
     </thead>
     <tbody>
@@ -76,5 +76,9 @@
 
   th{
     background-color: #BF8C2C;
+  }
+
+  .user {
+    width: 100px;
   }
 </style>

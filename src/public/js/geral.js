@@ -1,5 +1,5 @@
 function msgAlert(text, tipo) {
-  $('#msgtext').append(text)
+  $('#msgtext').append(text+'<br>')
     $('#msg').css('visibility','visible' )
     if(tipo == 'erro'){
       $('#msg').css('border-color','#f00' )
@@ -7,6 +7,9 @@ function msgAlert(text, tipo) {
     }else if(tipo == 'sucesso'){
       $('#msg').css('border-color','#0f0' )
       $('#msg').css('background','#79f07f' )
+    }else if(tipo == 'alert'){
+      $('#msg').css('border-color','#fa0' )
+      $('#msg').css('background','#f1aa60' )
     }
     setTimeout(function()
       {$('#msgtext').text('')
@@ -18,9 +21,12 @@ $(document).ready(() => {
   $('#form').submit((e)=> {
     e.preventDefault()
   })
-  var valorT = 0
+  var valorT = 0.00
+  var valorTotal = 0.00
   var itemCaixa = []
   var resp = $('.invisible').text().split(',')
+  var formPag = []
+  var desconto = 0
 
   if(resp.length > 1) {
     msgAlert(resp[1], resp[0])}
@@ -91,7 +97,7 @@ $(document).ready(() => {
     }
   })
 
-  $('#btnSalvar_estoque').click(function() {
+  $('#btnSalvar_estoque').click(function(e) {
     if(validarEstoque()) {
       $('#form').off('submit').submit()
     }
@@ -104,12 +110,21 @@ $(document).ready(() => {
     }
   })
 
-  $('#btnCancelAlterarSenha').click(function(){
+  $('#btnCancelAlterarSenhaAdmin').click(function(){
     $('.modal').removeClass('active')
+  })
+
+  $('#btnCancelAlterarSenha').click(function(){
+    history.back()
   })
 
   $('#btnSalvarCliente').click(function() {
     if(validarCliente())
+      $('#form').off('submit').submit()
+  })
+  
+  $('#btnSalvarFornecedor').click(function() {
+    if(validarFornecedor())
       $('#form').off('submit').submit()
   })
 
@@ -121,74 +136,126 @@ $(document).ready(() => {
     $(this).mask('999.999.999-99')
   })
 
-  $('#telCliente').keyup(function(){
-    $(this).mask('(99) 99999-9999')
+  $('#cpfCliente').change(function(){
+    $(this).mask('999.999.999-99')
   })
 
-  $('#telCliente').change(function(){
-    $(this).mask('(99) 99999-9999')
-  })
+  $('#telCliente').mask('(99) 99999-9999', {selectOnFocus: true} )
+  
+  $('#telFornecedor').mask('(99) 99999-9999', {selectOnFocus: true} )
 
-  $('#cpfUsuario').focus(function() {
-    $('#nomeCliente').val('')
-    $('#emailCliente').val('')
-    $('#enderecoCliente').val('')
-    $('#telCliente').val('')
-    $('#idCliente').val('')
-  })
+  $('#formDesconto').mask('9990.0', {reverse: true})
 
-  $('#cpfCliente').blur(function() {
-    if($(this).val().length != 14 || validarCPF($(this).val()) === false){
-      msgAlert('CPF inválido!', 'erro')
-      $(this).focus()
-    }
+  $('#vlSaida').mask('999.999.999.990,00', {reverse: true})
+  
+  $('#valorCF').mask('999.999.999.990,00', {reverse: true})
+
+  $('#telFornecedor').blur(function(){
     $.ajax({
-      url: '/clientes/pesCPF',
+      url: '/fornecedores/pesqForn',
       type: 'post',
       dataType: 'json',
-      data: {cpf: $(this).val()},
+      data: {tel: $(this).val()},
+      success: function(json) {
+        if(json.status){
+          $('#idForn').val(json.dados[0].id)
+          $('#nomeFornecedor').val(json.dados[0].fornecedor)
+          $('#contatoFornecedor').val(json.dados[0].contato)
+          $('#isInsert').val(false)
+        }else {
+          $('#nomeFornecedor').focus()
+          $('#isInsert').val(true)
+        }
+      }
+    })
+  })
+  
+  $('#telFornecedor').focus(function() {
+    $(this).val('')
+    $('#nomeFornecedor').val('')
+    $('#contatoFornecedor').val('')
+    $('#idForn').val('')
+  })
+  
+  $('#cpfCliente').blur(function() {
+    if($(this).val().length > 0){
+      if(validarCPF($(this).val())){
+        msgAlert('CPF inválido!', 'erro')
+        $(this).focus()
+      }
+    }
+  })
+
+  $('#telCliente').blur(function() {
+    $.ajax({
+      url: '/clientes/pesTel',
+      type: 'post',
+      dataType: 'json',
+      data: {tel: $(this).val()},
       success: function(json){
         if(json.status){
           $('#nomeCliente').val(json.dados.nome)
           $('#emailCliente').val(json.dados.email)
           $('#enderecoCliente').val(json.dados.endereco)
-          $('#telCliente').val(json.dados.telefone)
+          $('#cpfCliente').val(json.dados.cpf)
           $('#isInsert').val(false)
           $('#idCliente').val(json.dados.id)
-          $('#telCliente').focus()
+          $('#cpfCliente').focus()
         }else {
           $('#isInsert').val(true)
-          $('#nomeCliente').focus()
+          $('#cpfCliente').focus()
         }
       }
     })
   })
 
-  $('#nomeCliente').blur(function() {
-    if($(this).val().length < 5) {
-      msgAlert('Nome inválido! <br> Minimo 5 caracteres', 'erro')
-      $(this).focus()
-    }
-  })
-
   $('#btnAtualizar_estoque').click(function() {
-    if($('#qtdeInsert_estoque').val() < 1 || $('#qtdeInsert_estoque').val() == null)
+    let status = 0
+    if($('#btn-select-forn span').text() == 'Selecione um fornecedor'){
+      status += 1
+      msgAlert('Fornecedor Obrigatório!', 'erro')
+    }
+    if($('#nota_estoque').val().length < 3){
+      msgAlert('Nota Fiscal Obrigatória!', 'erro')
+      status += 1
+    }
+      if($('#qtdeInsert_estoque').val() < 1 || $('#qtdeInsert_estoque').val() == null){
       msgAlert('Quantidade inválida!', 'erro')
-    else
+      status += 1
+    }
+    if(status == 0) 
       $('#form').off('submit').submit()
   })
 
   $('#btnAtualizar_estoqueSaida').click(function() {
-    if($('#qtdeSaida_estoque').val() < 1 || $('#qtdeSaida_estoque').val() == null)
+    if($('#motivo_saida').val().length < 3)
+      msgAlert('Motivo Obrigatório!', 'erro')
+    else if($('#qtdeSaida_estoque').val() < 1 || $('#qtdeSaida_estoque').val() == null)
       msgAlert('Quantidade inválida!', 'erro')
     else
       $('#form').off('submit').submit()
   })
 
-  $('#codigo_estoque').keyup(function() {
-    $(this).val($(this).val().toUpperCase())
+  $('#btnRelatorioFornecedor').click(function() {
+    if($('.btn-select-forn span').text() == 'Selecione um fornecedor')
+      msgAlert('fornecedor Obrigatório!', 'erro')
+    else if($('#dateIni').val() == '' || $('#dateFim').val() == "")
+      msgAlert('Periodo inválido!', 'erro')
+    else
+      $('#form').off('submit').submit()
   })
 
+  $('#btnRelatorioConta').click(function() {
+  if($('#dateIni').val() == '' || $('#dateFim').val() == '')
+      msgAlert('Periodo inválido!', 'erro')
+    else
+      $('#form').off('submit').submit()
+  })
+
+  $('#codigo_estoque').keyup(function(e) {
+    $(this).val($(this).val().toUpperCase())
+   })
+ 
   $('#codigoEntSai_estoque').keyup(function() {
     $(this).val($(this).val().toUpperCase())
   })
@@ -246,13 +313,12 @@ $(document).ready(() => {
             $('#qtde_estoque').val(json[0].qtde)
             $('#qtde_estoque').attr('readonly','true')
             $('#custo_estoque').val(json[0].custo)
+            $('#custoOrig_estoque').val(json[0].custoOrig)
             $('#lucro_estoque').val(json[0].lucro)
             $('#venda_estoque').val(json[0].venda)
             $('#id_estoque').val(json[0].id)
             $('#qtdeMin_estoque').val(json[0].qtdeMin)
             $('#isSave_estoque').val('false')
-          }else {
-            $('#qtde_estoque').removeAttr('readonly')
           }
         },
         error:function(e) {
@@ -260,6 +326,31 @@ $(document).ready(() => {
         } 
       })
     }
+  })
+
+  $('#formCodigo').blur(function() {
+    $.ajax({
+      url: '/caixa/pesqForm',
+      type: 'post',
+      dataType: 'json',
+      data: {codigo: $(this).val()},
+      success: function(json) {
+        if(json.length > 0){
+          $('#id').val(json[0].id)
+          $('#formDescricao').val(json[0].descricao)
+          $('#formDesconto').val(json[0].desconto)
+          $('#isInsert').val(false)
+        }else {
+          $('#isInsert').val(true)
+        }
+      }
+    })
+  })
+
+  $('#formCodigo').focus(function() {
+    $(this).val('')
+    $('#formDescricao').val('')
+    $('#formDesconto').val('')
   })
 
   $('.btn-select').click(function() {
@@ -289,6 +380,7 @@ $(document).ready(() => {
               $('#item-qtde').attr('max', json[0].qtde)
             },
             error:function(e){
+              msgAlert('Falha ao pesquizar qtde em estoque!', 'erro')
               console.log('erro:'+e)
             }
           })
@@ -308,9 +400,9 @@ $(document).ready(() => {
       $('.options-cliente').append(`<li class="li">Balcão</li>`)
       list.forEach(element => {
         let item = element.split('-')
-        let cpf = item[1]
-        let cpfMask = cpf.substr(0,4)+'.'+cpf.substr(4,3)+'.'+cpf.substr(7, 3)+'-'+cpf.substr(10)
-        $('.options-cliente').append(`<li class="li">${item[0]} - ${cpfMask}</li>`)
+        let tel = item[1]
+        let telMask = '('+tel.substr(1,2)+') '+tel.substr(3,5)+'-'+tel.substr(8)
+        $('.options-cliente').append(`<li class="li">${item[0]} - ${telMask}</li>`)
       })
       $('.li').each(function() {
         $(this).click(function() {
@@ -319,7 +411,37 @@ $(document).ready(() => {
         })
       })
   })
-
+  
+  $('.btn-select-forn').click(function() {
+    $('.select-content-forn').toggleClass('active')
+    if($('.select-content-forn').hasClass('active')){
+      $('#input-select-forn').val('')
+      $('#input-select-forn').focus()
+      $('.options-forn').find('li').remove()
+      $.ajax({
+        url: '/fornecedores/list',
+        type: 'POST',
+        dataType: 'json',
+        success:((json)=> {
+          let lista = []
+          json.forEach(element => {
+            lista.push(`${element.id} - ${element.fornecedor} - ${element.telfornecedor}`)
+            $('.options-forn').append(`<li class="li" value="${element.id}">${element.fornecedor} - ${element.telfornecedor}</li>`)
+          })
+          $('#forn-select').val(lista)
+          $('.li').each(function() {
+            $(this).click(function() {
+              $('.btn-select-forn span').text($(this).text())
+              $('#fornecedor').val($(this).text()+' - '+$(this).val())
+              $('.select-content-forn').removeClass('active')
+              $('#id_forn').val($(this).val())
+            })
+          })
+        })
+      })
+    }
+  })
+ 
   $('.btn-select-prod').click(function() {
     $('.select-content-prod').toggleClass('active')
     if($('.select-content-prod').hasClass('active')){
@@ -349,20 +471,22 @@ $(document).ready(() => {
                 dataType: 'json',
                 data: {codigo: codigo},
                 success:function(json){
-                  $('#id_estoque').val(json[0].id)
-                  $('#cod_estoque').val(json[0].codigo)
-                  $('#desc_estoque').val(json[0].descricao)
-                  $('#fabricante_estoque').val(json[0].fabricante)
-                  $('#qtde_estoque').val(json[0].qtde)
-                  $('#qtdeMin_estoque').val(json[0].qtdeMin)
-                  $('#custo_estoque').val(json[0].custo)
-                  $('#lucro_estoque').val(json[0].lucro)
-                  $('#venda_estoque').val(json[0].venda)
+                  $('#id_estoque').val(json[0].id ? json[0].id : '')
+                  $('#cod_estoque').val(json[0].codigo ? json[0].codigo: '')
+                  $('#desc_estoque').val(json[0].descricao ? json[0].descricao : '')
+                  $('#fabricante_estoque').val(json[0].fabricante ? json[0].fabricante : '')
+                  $('#qtde_estoque').val(json[0].qtde ? json[0].qtde : '')
+                  $('#qtdeMin_estoque').val(json[0].qtdeMin ? json[0].qtdeMin : '')
+                  $('#custo_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
+                  $('#custoOrig_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
+                  $('#lucro_estoque').val(json[0].lucro ? json[0].lucro.toFixed(1) : '')
+                  $('#venda_estoque').val(json[0].venda ? String(json[0].venda.toFixed(2)).replace('.',',') : '')
                   $('#fornecedor_estoque').focus()
                   $('#btnAtualizar_estoque').removeAttr('disabled')
                   $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
                 },
                 error:function(e){
+                  msgAlert('Falha ao consultar estoque!', 'erro')
                   console.log('erro:'+e)
                 }
               })
@@ -388,21 +512,50 @@ $(document).ready(() => {
       if($('.select-content-pg').hasClass('active')){
         $('#input-select-pg').val('')
         $('#input-select-pg').focus()
+        $('.options-pg').find('li').remove()
       }
       const list = $('#formPg-select').val().split(',')
       list.forEach(element => {
-        $('.options-pg').append(`<li class="li">${element}</li>`)
+        const dados = element.split('-')
+        let descItem = dados[2]
+        const desc = dados[2] != 0 ? ' - ' +dados[2]+'%' : ''
+        $('.options-pg').append(`<li class="li" value=${descItem}>${dados[0]} - ${dados[1]} ${desc}</li>`)
       })
       $('.li').each(function() {
         $(this).click(function() {
           $('.btn-select-pg span').text($(this).text())
           $('.select-content-pg').removeClass('active')
-          $('#vlTotal').focus().select()
-          $('#btnConcluir').text('Finalizar')
+          desconto = ($(this).val())
+          const vlDesconto = (valorT - ((valorT / 100) * desconto)).toFixed(2)
+          $('#vlTotal').val(String(vlDesconto).replace('.',','))
+          valorTotal = vlDesconto
+          $('#vlReceb').focus().select()
         })
       })
   })
     
+  $('#input-select-forn').keyup(function(e) {
+    var text = $(this).val().toUpperCase()
+    const list = $('#forn-select').val().split(',')
+    const arrFilter = list.filter((item => {
+      return item.toUpperCase().includes(text)
+    }))
+    $('.options-forn').find('li').remove()
+    arrFilter.forEach(element => {
+      const item = element.split('-')
+      $('.options-forn').append(`<li class="li" value="${item[0]}">${item[1]} - ${item[2]}</li>`)
+    })
+    $('.li').each(function() {
+      $(this).click(function() {
+        console.log($(this).val())
+        $('.btn-select-forn span').text($(this).text())
+        $('#fornecedor').val($(this).text()+' - '+$(this).val())
+        $('.select-content-forn').removeClass('active')
+        $('#id_forn').val($(this).val())
+      })
+    })
+  })
+ 
   $('#input-select-cliente').keyup(function(e) {
     var text = $(this).val().toUpperCase()
     const list = $('#itens-select-cliente').val().split(',')
@@ -448,6 +601,7 @@ $(document).ready(() => {
               $('#item-qtde').attr('max', json[0].qtde)
             },
             error:function(e){
+              msgAlert('Falha ao consultar quantidade em estoque!', 'erro')
               console.log('erro:'+e)
             }
           })
@@ -478,20 +632,22 @@ $(document).ready(() => {
           dataType: 'json',
           data:{ codigo: codigo},
           success:function(json){
-            $('#id_estoque').val(json[0].id)
-            $('#cod_estoque').val(json[0].codigo)
-            $('#desc_estoque').val(json[0].descricao)
-            $('#fabricante_estoque').val(json[0].fabricante)
-            $('#qtde_estoque').val(json[0].qtde)
-            $('#qtdeMin_estoque').val(json[0].qtdeMin)
-            $('#custo_estoque').val(json[0].custo)
-            $('#lucro_estoque').val(json[0].lucro)
-            $('#venda_estoque').val(json[0].venda)
-            $('#fornecedor_estoque').focus()
-            $('#btnAtualizar_estoque').removeAttr('disabled')
-            $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
+            $('#id_estoque').val(json[0].id ? json[0].id : '')
+                  $('#cod_estoque').val(json[0].codigo ? json[0].codigo: '')
+                  $('#desc_estoque').val(json[0].descricao ? json[0].descricao : '')
+                  $('#fabricante_estoque').val(json[0].fabricante ? json[0].fabricante : '')
+                  $('#qtde_estoque').val(json[0].qtde ? json[0].qtde : '')
+                  $('#qtdeMin_estoque').val(json[0].qtdeMin ? json[0].qtdeMin : '')
+                  $('#custo_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
+                  $('#custoOrig_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
+                  $('#lucro_estoque').val(json[0].lucro ? json[0].lucro.toFixed(1) : '')
+                  $('#venda_estoque').val(json[0].venda ? String(json[0].venda.toFixed(2)).replace('.',',') : '')
+                  $('#fornecedor_estoque').focus()
+                  $('#btnAtualizar_estoque').removeAttr('disabled')
+                  $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
           },
           error:function(e){
+            msgAlert('Falha ao buscar dados do item no estoque!', 'erro')
             console.log('erro:'+e)
           }
         })
@@ -507,14 +663,20 @@ $(document).ready(() => {
     }))
     $('.options-pg').find('li').remove()
       arrFilter.forEach(element => {
-        $('.options-pg').append(`<li class="li">${element}</li>`)
+        const dados = element.split('-')
+        let descItem = parseFloat(dados[2])
+        const desc = dados[2] != 0 ? ' - ' +dados[2]+'%' : ''
+        $('.options-pg').append(`<li class="li" value=${descItem}>${dados[0]} - ${dados[1]} ${desc}</li>`)
     });
     $('.li').each(function() {
       $(this).click(function() {
         $('.btn-select-pg span').text($(this).text())
         $('.select-content-pg').removeClass('active')
-        $('#vlTotal').focus().select()
-        $('#btnConcluir').text('Finalizar')
+        desconto = ($(this).val())
+        const vlDesconto = (valorT - ((valorT / 100) * desconto)).toFixed(2)
+        $('#vlTotal').val(String(vlDesconto).replace('.',','))
+        valorTotal = vlDesconto
+        $('#vlReceb').focus().select()
       })
     })
   })
@@ -535,12 +697,11 @@ $(document).ready(() => {
             $('#item-qtde').val(1)
           }else {
             const valor = json[0].venda * qtde
-            let venda = String(json[0].venda).replace('.',',')
             $('tbody').append('<tr>'+
               '<td class="l1">'+cod[0]+'</td>'+
               '<td class="l2">'+cod[1]+'</td>'+
               '<td class="l3">'+qtde+'</td>'+
-              '<td class="l4">'+venda+'</td>'+
+              '<td class="l4">'+String(json[0].venda.toFixed(2)).replace('.',',')+'</td>'+
               '<td class="l5">'+String(valor.toFixed(2)).replace('.',',')+'</td>'+
               '</tr>')
             $('.btn-select span').text('Selecione um produto')
@@ -556,10 +717,12 @@ $(document).ready(() => {
   })
 
   $('#btnFinalizarCompra').click(function() {
-    if(valorT> 0)
+    $('#vlRec').text('Valor a receber')
+    if(valorT > 0){
       $('.modal').addClass('active')
-    else msgAlert('Adcione um produto', 'erro')
-      $('#vlTotal').val(valorT.toFixed(2))
+    }else msgAlert('Adcione um produto', 'erro')
+      valorTotal = valorT
+      $('#vlTotal').val(String(valorTotal.toFixed(2)).replace('.',','))
   })
 
   $('#btnTrocarSenha').click(function() {
@@ -593,7 +756,6 @@ $(document).ready(() => {
   })
 
   $('#btnSalvarSenha').click(function(){
-    // if($('.modal').hasClass('active')){
       $('#isToggle').val(true)
       if(($('#cadSenha').val() == $('#conf').val()) && $('#cadSenha').val().length > 5){
         $('.modal').removeClass('active')
@@ -601,69 +763,71 @@ $(document).ready(() => {
       }else{
         msgAlert('Senha inválida ou <br> confirmação de senha não confere!', 'erro')
       }
-    // }
   })
   
   $('#btnConcluir').click(function() {
-    if($('.btn-select-pg span').text() != 'Selecione a forma de pagamento') {
-      let tipoPg = $('.btn-select-pg span').text().split('-')
-      let vlTotal = $('#vlTotal').val()
+    if(valorTotal > 0){
+      if($('.btn-select-pg span').text() == 'Selecione a forma de pagamento') {
+        msgAlert('Selecione a forma de pagamento', 'erro')
+      }else if($('#vlReceb').val() <= 0){
+        msgAlert('Digite o valor recebido', 'erro')
+        $('#vlReceb').focus()
+      }else {
+        let receb = parseFloat($('#vlReceb').val().replace(',','.'))
+        let vlDif = (valorTotal - receb).toFixed(2)
+        valorTotal = vlDif
+        let tipoPg = $('.btn-select-pg span').text().split('-')
+        formPag.push(`${tipoPg[0]} - ${receb}`)
+        if(vlDif > 0){
+          $('.btn-select-pg span').text('Selecione a forma de pagamento')
+          $('#vlReceb').val('')
+          $('#vlTotal').val(String((vlDif)).replace('.',','))
+        }else if(vlDif < 0) {
+          $('#vlRec').text('Troco')
+          $('#vlTotal').val(String((vlDif * -1).toFixed(2)).replace('.',','))
+          $('#btnConcluir').text('Finalizar')
+          $('.btn-select-pg span').text('Selecione a forma de pagamento')
+          $('#vlReceb').val('')
+        }else if(vlDif == 0) {
+          $('#btnConcluir').text('Finalizar')
+          $('.btn-select-pg span').text('Selecione a forma de pagamento')
+          $('#vlReceb').val('')
+          $('#vlTotal').val('0,00')
+        }
+      }
+    }else if(valorTotal <= 0){
       $('.modal').removeClass('active')
       if($('.btn-select-cliente span').text() != 'Balcão'){
         let cliente = $('.btn-select-cliente span').text()
         let cli = cliente.substr(-14).replace(/[^0-9]/g,'')
         $.ajax({
-          url: '/clientes/findCpf',
+          url: '/clientes/pesTel',
           type: 'post',
           dataType: 'json',
-          data: {cpf: cli},
+          data: {tel: cli},
           success: function(json){
             if(json.status){
-              console.log(json.result[0].id)
-              let idCliente =  json.result[0].id
-              finalizarCompra(itemCaixa, tipoPg, vlTotal, idCliente )
+              let idCliente =  json.dados.id
+              finalizarCompra(itemCaixa, formPag, valorT, desconto, idCliente)
+            }else {
+              msgAlert('Falha ao buscar dados do cliente', 'erro')
             }
           }
         })
       }else {
-        finalizarCompra(itemCaixa, tipoPg, vlTotal, 0)
+        finalizarCompra(itemCaixa, formPag, valorT, desconto, 0)
       }
-    }else {
-      msgAlert('Selecione a forma de pagamento', 'erro')
     }
   })
 
   $('#btnVoltar').click(function() {
     $('.modal').removeClass('active')
+    $('.btn-select-pg span').text('Selecione a forma de pagamento')
+    $('#vlReceb').val('')
   })
 
-  $('#vlTotal').keyup(function(e){
+  $('#vlReceb').keyup(function(e){
     $(this).mask('999.999.999.990,00', {reverse: true})
-    let tipoPg = $('.btn-select-pg span').text().split('-')
-    let vlTotal = $(this).val()
-    const keycode = (e.keyCode ? e.keyCode : e.wich)
-    if(keycode == 13){ 
-      $('.modal').removeClass('active')
-      if($('.btn-select-cliente span').text() != 'Balcão'){
-        let cliente = $('.btn-select-cliente span').text().split('-')
-        let cli = cliente[1].replace(/[^0-9]/g,'')
-        $.ajax({
-          url: '/clientes/findCpf',
-          type: 'post',
-          dataType: 'json',
-          data: {cpf: cli},
-          success: function(json){
-            if(json.status){
-              console.log(json.result[0].id)
-              var idCliente = json.result[0].id
-              finalizarCompra(itemCaixa, tipoPg, vlTotal, idCliente )
-            }
-          }
-        })
-      }else {
-        finalizarCompra(itemCaixa, tipoPg, vlTotal, 0 )
-      }
-    }
   })
 
   $('#fornecedor_estoque').keyup(function(e){
@@ -726,9 +890,16 @@ $(document).ready(() => {
   })
 
   $('#fechaCaixa').click(function(){
-    if($('#idVenda').val() > 0) {
-      
-    }
+    $.ajax({
+      url: 'fecha/caixa',
+      type: 'post',
+      success: function(json){
+        msgAlert(json.msg, json.tipo)
+        setTimeout(() => {
+          location.assign('/caixa')
+        }, 3000);
+      }
+    })
   })
 
   $('#btnRelatorioCaixa').click(function(){
@@ -738,12 +909,57 @@ $(document).ready(() => {
       $('#form').off('submit').submit()
   })
 
+  $('#btnRelatorioLucro').click(function(){
+    if($('#dateIni').val() == '' || $('#dateFim').val() == ''){
+      msgAlert('Dados obrigatórios', 'erro')
+    }else
+      $('#form').off('submit').submit()
+  })
+
+  $('#btnSalvarSaida').click(function(){
+    if($('#motivoSaida').val().length < 4 )
+      msgAlert('Motivo Obrigatório!', 'erro')
+    else if ($('#vlSaida').val() < 1)
+      msgAlert('Valor inválido!', 'erro')
+    else
+    $('#form').off('submit').submit()
+
+  })
+
   $('#btnRelatorioEstoque').click(function(){
     if($('#dateIni').val() == '' || $('#dateFim').val() == ''){
       msgAlert('Dados obrigatórios', 'erro')
     }else
       $('#form').off('submit').submit()
   })
+
+  $('#btnSalvarFormPag').click(function() {
+    if(validarFormPag())
+    $('#form').off('submit').submit()
+  })
+
+  $('#btnSalvarCF').click(function() {
+    console.log($('#dataCF').val())
+    if($('#descricaoCF'). val().length < 4)
+      msgAlert('Descrição inválida!', 'erro')
+    else if($('#dataCF').val() == '')
+      msgAlert('Data obrigatória!', 'erro')
+    else if($('#valorCF').val() < 1)
+      msgAlert('Valor inválido!', 'erro')
+    else
+      $('#form').off('submit').submit()
+  })
+
+  function validarFormPag() {
+    if($('#formCodigo').val().length < 3){
+      msgAlert('Código inválido!', 'erro')
+      return false
+    }else if($('#formDescricao').val().length < 3){
+      msgAlert('Descrição inválida!', 'erro')
+      return false
+    }
+    return true
+  }
 
   function calcularVenda(custo, lucro) {
     let venda = ((custo / 100) * lucro)
@@ -752,23 +968,14 @@ $(document).ready(() => {
   }
 
   function validarEstoque(){
-    if($('#codigo_estoque').val().length < 3 || $('#codigo_estoque').val().length > 12) {
-      msgAlert('Código inválido! <br> Min de 3 Max de 12 caracteres', 'erro')
+    if($('#codigo_estoque').val().length < 3 ) {
+      msgAlert('Código inválido! <br> Min de 3, Max de 12 caracteres', 'erro')
       return false
     }else if($('#descricao_estoque').val().length < 5) {
       msgAlert('Descrição inválida! <br> Minimo de 5 caracteres', 'erro')
       return false
-    }else if($('#fabricante_estoque').val().length < 5) {
-      msgAlert('Fabricante inválido! <br> Minimo de 5 caracteres', 'erro')
-      return false
-    }else if($('#custo_estoque').val() < 1) {
-      msgAlert('Custo inválido!', 'erro')
-      return false
-    }else if($('#lucro_estoque').val() < 1) {
-      msgAlert('Lucro inválido!', 'erro')
-      return false
-    }else if($('#qtdeMin_estoque').val() < 0) {
-      msgAlert('Qtde minima inválida!', 'erro')
+    }else if($('#fabricante_estoque').val().length < 3) {
+      msgAlert('Fabricante inválido! <br> Minimo de 3 caracteres', 'erro')
       return false
     }
     return true
@@ -861,10 +1068,7 @@ $(document).ready(() => {
 
   function validarCliente() {
     if($('#nomeCliente').val().length < 5) {
-      msgAlert('Nome inválido! <br> Minimo de 5 caracteres', 'erro')
-      return false
-    }else if($('#emailCliente').val().length < 10){
-      msgAlert('Email inválido! <br> Minimo de 10 caracteres', 'erro')
+      msgAlert('Nome inválido! (Minimo de 5 caracteres)', 'erro')
       return false
     }else if($('#telCliente').val().length < 14){
       msgAlert('Telefone inválido!', 'erro')
@@ -873,8 +1077,21 @@ $(document).ready(() => {
     return true
   }
 
-  function finalizarCompra(item, formPg, vlTotal, idCliente) {
-    // console.log(idCliente)
+  function validarFornecedor() {
+    if($('#telFornecedor').val().length < 3){
+      msgAlert('Telefone Obrigatório', 'erro')
+      return false
+    }else if($('#nomeFornecedor').val().length < 3){
+      msgAlert('Nome Obrigatório', 'erro')
+      return false
+    }else if($('#contatoFornecedor').val().length < 3){
+      msgAlert('Contato Obrigatório', 'erro')
+      return false
+    }
+    return true
+  }  
+
+  function finalizarCompra(item, formPg, valorT, desconto, idCliente) {
     let itens = []
     item.forEach((it) => {
       itens.push(it.split('-'))
@@ -883,7 +1100,7 @@ $(document).ready(() => {
       url: '/caixa/finVenda',
       type: 'POST',
       dataType: 'json',
-      data:{ itens, formPg, valorT, vlTotal, idCliente},
+      data:{ itens, formPg, valorT, desconto, idCliente},
       success:function(json){
         if(json.status){
           msgAlert(json.msg, 'sucesso')
@@ -901,6 +1118,4 @@ $(document).ready(() => {
       }
     })
   }
-
-  
 })

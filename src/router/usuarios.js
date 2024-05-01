@@ -20,8 +20,6 @@ router.post('/', async (req, res) => {
             res.json({ status: 'erro', msg: 'Falha ao resetar senha'})
           }
     }else {
-      console.log('toggle true')
-      console.log(dados)
       bcrypt.genSalt(10, (erro, salt) => {
         bcrypt.hash(dados.senhaUsuario, salt, async (erro, hash) => {
           if(erro){
@@ -37,7 +35,6 @@ router.post('/', async (req, res) => {
       })
     }
   }else {
-    console.log('toggle false')
     dados.cpfUsuario = dados.cpfUsuario.replace(/[^0-9]/g,'')
     if(dados.nivelUsuario == 'Administrador'){
       dados.nivelUsuario = 1
@@ -45,8 +42,6 @@ router.post('/', async (req, res) => {
       dados.nivelUsuario = 0
     }
     if(dados.isInsert == 'true') {
-      console.log('insert true')
-      console.log(dados)
       delete dados.isToggle
       delete dados.isInsert
       delete dados.idUsuario
@@ -54,8 +49,6 @@ router.post('/', async (req, res) => {
       dados.senhaUsuario = senhaInicial
       result = await db.insert(1, dados)
     }else {
-      console.log('insert false')
-      console.log(dados)
       result = await db.query(`UPDATE usuarios SET nome = "${dados.nomeUsuario}", cpf = "${dados.cpfUsuario}", email = "${dados.emailUsuario}", eadmin = ${dados.nivelUsuario} WHERE id = ${dados.idUsuarioSelected}`)
     }
     if(result.affectedRows == 1){

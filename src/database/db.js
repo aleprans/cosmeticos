@@ -38,11 +38,8 @@ async function createTables() {
     'codigo varchar(12) NOT NULL,'+
     'descricao varchar(255) NOT NULL,'+
     'fabricante varchar(255) NOT NULL,'+
-    'custo FLOAT NOT NULL,'+
-    'lucro varchar(6) NOT NULL,'+
-    'venda FLOAT NOT NULL,'+
     'qtde int DEFAULT 0,'+
-    'qtdeMin int DEFAULT 0,'+
+    'qtdeMin int DEFAULT 1,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(tableEstoque)
@@ -54,9 +51,10 @@ async function createTables() {
     'dtAtual DATE ,'+
     'usuario INT ,'+
     'tipo INT ,'+
-    'fornecedor varchar(255) ,'+
+    'fornecedor INT ,'+
     'nota varchar(12) ,'+
     'motivo varchar(255) ,'+
+    'valor FLOAT default 0 ,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(moviEstoque)
@@ -65,6 +63,7 @@ async function createTables() {
     'id INT NOT NULL AUTO_INCREMENT,'+
     'codigo VARCHAR(12) NOT NULL,'+
     'descricao VARCHAR(255) NOT NULL,'+
+    'desconto FLOAT DEFAULT 0,'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(formPagamentos)
@@ -82,14 +81,65 @@ async function createTables() {
   const vendas = 'CREATE TABLE IF NOT EXISTS vendas ('+
     'id INT NOT NULL AUTO_INCREMENT,'+
     'valor FLOAT NOT NULL,'+
+    'desconto FLOAT default 0,'+
     'dataVd DATE NOT NULL,'+
     'usuario INT NOT NULL,'+
     'status INT NOT NULL,'+
-    'vlorigin FLOAT NOT NULL,'+
     'cliente int default 0,'+
+    'vlorig FLOAT as (valor - (valor / 100) * desconto),'+
     'PRIMARY KEY (id)'+
     ')'
   await conn.query(vendas)
+  
+  const formPagvendas = 'CREATE TABLE IF NOT EXISTS formpagvendas ('+
+    'id INT NOT NULL AUTO_INCREMENT,'+
+    'idVenda INT NOT NULL,'+
+    'idForma INT NOT NULL,'+
+    'formvalor FLOAT NOT NULL,'+
+    'PRIMARY KEY (id)'+
+    ')'
+  await conn.query(formPagvendas)
+
+  const historicoPrecos = 'CREATE TABLE IF NOT EXISTS historicoPrecos ('+
+    'id INT AUTO_INCREMENT,'+
+    'idprod INT NOT NULL,'+
+    'data DATE NOT NULL,'+
+    'valor FLOAT NOT NULL,'+
+    'lucro FLOAT NOT NULL,'+
+    'venda FLOAT NOT NULL,'+
+    'PRIMARY KEY (id)'+
+    ')'
+  await conn.query(historicoPrecos)
+
+  const fornecedores = 'CREATE TABLE IF NOT EXISTS fornecedores ('+
+    'id INT AUTO_INCREMENT,'+
+    'fornecedor VARCHAR(255) NOT NULL,'+
+    'telfornecedor VARCHAR(11),'+
+    'contato VARCHAR(20),'+
+    'PRIMARY KEY (id)'+
+    ')'
+  await conn.query(fornecedores)
+
+  const saidaCaixa = 'CREATE TABLE IF NOT EXISTS saidaCaixa ('+
+    'id INT AUTO_INCREMENT,'+
+    'motivo VARCHAR(255) NOT NULL,'+
+    'valor FLOAT NOT NULL,'+
+    'data DATE NOT NULL,'+
+    'usuario INT NOT NULL,'+
+    'PRIMARY KEY (ID)'+
+    ')'
+    await conn.query(saidaCaixa)
+
+  const contasFixas = 'CREATE TABLE IF NOT EXISTS contasfixas ('+
+    'id INT AUTO_INCREMENT,'+
+    'descricao VARCHAR(255) NOT NULL,'+
+    'data DATE NOT NULL,'+
+    'valor FLOAT NOT NULL,'+
+    'usuario INT NOT NULL,'+
+    'PRIMARY KEY (id)'+
+    ')'
+
+  await conn.query(contasFixas)
 
   return 
 }
@@ -97,11 +147,17 @@ async function createTables() {
 const tabelas = [
   ['clientes', 'cpf', 'nome', 'email', 'endereco', 'telefone'], // 0
   ['usuarios', 'nome', 'usuario', 'cpf', 'email', 'eadmin', 'senha'], // 1
-  ['estoque', 'codigo', 'descricao', 'fabricante', 'qtdeMin', 'qtde', 'custo', 'lucro', 'venda' ], // 2
-  ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario', 'tipo', 'fornecedor', 'nota', 'motivo'], // 3
-  ['formPagamentos', 'codigo', 'descricao'], // 4
+  ['estoque', 'codigo', 'descricao', 'fabricante', 'qtdeMin', 'qtde'],// 2
+  ['moviEstoque', 'codigo', 'qtde', 'dtAtual', 'usuario', 'tipo', 'fornecedor', 'nota', 'motivo', 'valor'], // 3
+  ['formPagamentos', 'codigo', 'descricao', 'desconto'], // 4
   ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda', 'valor'], // 5
-  ['vendas', 'valor', 'dataVd', 'usuario', 'status', 'vlorigin', 'cliente'] // 6
+  ['vendas', 'valor', 'desconto', 'dataVd', 'usuario', 'status', 'cliente'], // 6
+  ['formpagvendas', 'idvenda', 'idforma', 'formvalor'], // 7
+  ['historicoprecos', 'idprod', 'data', 'valor', 'lucro', 'venda' ],//8
+  ['fornecedores', 'fornecedor', 'telFornecedor', 'contato'],//9
+  ['saidacaixa', 'motivo', 'valor', 'data', 'usuario'],//10
+  ['contasfixas', 'descricao', 'data', 'valor', 'usuario']//11
+
 ]
 
 async function signIn(tab, usuario) {

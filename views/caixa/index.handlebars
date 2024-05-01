@@ -13,7 +13,13 @@
   <div class="container">    
     <div class="modal">
       <div class="cardModal">
+        <div class="lineCaixa">
         <h1>Finalizar venda</h1>
+        <div class="vlTotal">
+          <label for="vlTotal" id="vlRec">Valor a receber</label>
+          <input type="text" name="vlTotal" id="vlTotal" readonly/>
+          </div>
+        </div>
         <div class="line">
           <div class="textfield">
             <label for="form-pg">Form Pagamento</label>
@@ -29,12 +35,12 @@
             </div>
           </div>
           <div class="textfield cod">
-            <label for="vlTotal">Valor Total</label>
-            <input type="text" name="vlTotal" id="vlTotal"/>
+            <label for="vlReceb">Valor Recebido</label>
+            <input type="text" name="vlReceb" id="vlReceb"/>
           </div>
         </div>
         <div class="bts">
-          <button class="btn-finalizar-compra" id="btnConcluir">Finalizar</button>
+          <button class="btn-finalizar-compra" id="btnConcluir">Receber</button>
           <button class="btn-finalizar-compra" id="btnVoltar">Voltar</button>
         </div>
       </div>
