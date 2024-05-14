@@ -52,8 +52,19 @@ router.get('/saida', (req, res) => {
   res.render('caixa/saida')
 })
 
-router.get('/contasFixas', (req, res) => {
-  res.render('caixa/contasFixas')
+router.get('/contasFixas', async (req, res) => {
+  const contas = await db.query(`SELECT id, descricao, DATE_FORMAT(data, "%d/%m/%Y") dataf, REPLACE(REPLACE(REPLACE(FORMAT(valor,2),',','-'),'.',','),'-','.') valor FROM contasfixas ORDER BY data;`)
+  res.render('caixa/contasFixas', {dados: contas})
+})
+
+router.get('/insertContasFixas', (req, res) => {
+  res.render('caixa/insertContasFixas')
+})
+
+router.get('/editCF', async (req, res) => {
+  const {id} = req.query
+  const dados = await db.query(`SELECT descricao, DATE_FORMAT(data,"%d/%m/%Y") data, REPLACE(REPLACE(REPLACE(FORMAT(valor, 2), ',','-'), '.',','), '-','.') valor FROM contasfixas WHERE id = ${id}`)
+  res.render('caixa/editContasFixas', {dados: dados})
 })
 
 // Back-end
@@ -182,7 +193,21 @@ router.post('/saida', async (req, res) => {
   }
 })
 
-router.post('/contasFixas', async (req, res) => {
+router.post('/editCF', async (req, res) => {
+  const dados = req.body
+  const {id} = req.query
+  const user = req.user[0].id
+  const data = dados.dataCF.split('/')
+  const dtEUA = `${data[2]}-${data[1]}-${data[0]}`
+  const valor = dados.valorCF.replace('.','').replace(',','.')
+  const result = await db.update(11, id, {desc: dados.descricao, data: dtEUA, valor: valor, usuario: user})
+  if(result[0].affectedRows == 1)
+    res.redirect('/caixa')
+  else
+    res.redirec('/caixa')
+})
+
+router.post('/insertContasFixas', async (req, res) => {
   const dados = req.body
   const user = req.user[0].id
   const data = dados.dataCF.split('/')
@@ -190,9 +215,18 @@ router.post('/contasFixas', async (req, res) => {
   const valor = dados.valorCF.replace('.','').replace(',','.')
   const result = await db.insert(11, {desc: dados.descricao, data: dtEUA, valor: valor, usuario: user})
   if(result[0].affectedRows == 1)
-    res.render('caixa/contasFixas', {tipo: 'sucesso', msg: 'Dados salvos com sucesso!'})
+    res.render('caixa/insertContasFixas', {tipo: 'sucesso', msg: 'Dados salvos com sucesso!'})
   else
-    res.render('caixa/contasFixas', {tipo: 'erro', msg: 'Falha ao salvar dados!'})
+    res.render('caixa/insertContasFixas', {tipo: 'erro', msg: 'Falha ao salvar dados!'})
+})
+
+router.post('/deletCF', async (req, res) => {
+  const { id } = req.body
+  const result = await db.deleteId(11, id)
+  if(result[0].affectedRows == 1)
+    res.json({status: true, msg: 'Conta deletada com sucesso!'})
+  else 
+    res.json({status: false})
 })
 
 module.exports = router

@@ -153,7 +153,7 @@ const tabelas = [
   ['itensVendidos', 'idItem', 'qtdeItem', 'idVenda', 'valor'], // 5
   ['vendas', 'valor', 'desconto', 'dataVd', 'usuario', 'status', 'cliente'], // 6
   ['formpagvendas', 'idvenda', 'idforma', 'formvalor'], // 7
-  ['historicoprecos', 'idprod', 'data', 'valor', 'lucro', 'venda' ],//8
+  ['historicoprecos', 'idprod', 'data', 'valor', 'lucro', 'venda', 'idmovi' ],//8
   ['fornecedores', 'fornecedor', 'telFornecedor', 'contato'],//9
   ['saidacaixa', 'motivo', 'valor', 'data', 'usuario'],//10
   ['contasfixas', 'descricao', 'data', 'valor', 'usuario']//11

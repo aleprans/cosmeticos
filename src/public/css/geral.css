@@ -235,7 +235,7 @@ margin: 5px 0;
   box-sizing: border-box;
 }
 
-.textfield > label, .select > label, .select-cliente > label, .select-forn > label, .textfieldbox label {
+.textfield > label, .select > label, .select-cliente > label, .select-forn > label, .textfieldbox label, .textfieldcheck label {
   color: #f0ffffde;
   margin-bottom: 10px;
 }
@@ -243,6 +243,28 @@ margin: 5px 0;
 .textfield > input::placeholder {
   color: #f0ffff94;
 }
+
+.textfieldcheck {
+  width: 100%;
+  margin: 10px;
+  height: 50px;
+  flex-direction: row;
+  background-color: #514869;
+  border-radius: 8px;
+  align-self: center;
+  align-content: center;
+}
+
+.textfieldcheck > span {
+  color: #BF8034;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.textfieldcheck > input[type=checkbox] {
+ align-items: center;
+ margin-right: 10px;
+ }
 
 .textfieldbox {
   width: 50px;
@@ -326,12 +348,12 @@ margin: 5px 0;
   overflow: auto;
 }
 
-.select , .select-pg, .select-acesso, .select-prod, .select-cliente, .select-forn{
+.select , .select-pg, .select-acesso, .select-prod, .select-cliente, .select-forn, .select-prod-rel{
   position: relative;
   width: 100%;
 }
 
-.btn-select, .btn-select-pg, .btn-select-acesso, .btn-select-prod, .btn-select-cliente, .btn-select-forn {
+.btn-select, .btn-select-pg, .btn-select-acesso, .btn-select-prod, .btn-select-cliente, .btn-select-forn, .btn-select-prod-rel {
   padding: 15px 8px;
   width: 100%;
   border-radius: 10px;
@@ -341,11 +363,11 @@ margin: 5px 0;
   color: #f0ffff94;
 }
 
-.btn-select span, .btn-select-pg span, .btn-select-acesso span, .btn-select-prod span, .btn-select-cliente span, .btn-select-forn span{
+.btn-select span, .btn-select-pg span, .btn-select-acesso span, .btn-select-prod span, .btn-select-cliente span, .btn-select-forn span, .btn-select-prod-rel span{
   width: 100%;
 }
 
-.select-content, .select-content-pg, .select-content-acesso, .select-content-prod, .select-content-cliente, .select-content-forn{
+.select-content, .select-content-pg, .select-content-acesso, .select-content-prod, .select-content-cliente, .select-content-forn, .select-content-prod-rel{
   border: 1px solid gray;
   border-radius: 5px;
   padding: 10px;
@@ -358,7 +380,7 @@ margin: 5px 0;
   color: #f0ffff94;
 }
 
-.select-content input, .select-content-pg input, .select-content-prod input, .select-content-cliente input, .select-content-forn input{
+.select-content input, .select-content-pg input, .select-content-prod input, .select-content-cliente input, .select-content-forn input, .select-content-prod-rel input{
   padding: 3px;
   width: 90%;
   margin: 5px;
@@ -367,7 +389,7 @@ margin: 5px 0;
   border-radius: 5px;
 }
 
-.select-content .options, .select-content-pg .options-pg, .select-content-acesso .options-acesso, .select-content-prod .options-prod, .select-content-cliente .options-cliente, .select-content-forn .options-forn{
+.select-content .options, .select-content-pg .options-pg, .select-content-acesso .options-acesso, .select-content-prod .options-prod, .select-content-cliente .options-cliente, .select-content-forn .options-forn, .select-content-prod-rel .options-prod-rel{
   max-height: 200px;
   list-style: none;
   overflow: auto;
@@ -375,7 +397,7 @@ margin: 5px 0;
   font-size: 14px;
 }
 
-.options li, .options-pg li, .options-acesso li, .options-prod li, .options-cliente li, .options-forn li{
+.options li, .options-pg li, .options-acesso li, .options-prod li, .options-cliente li, .options-forn li, .options-prod-rel li{
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
@@ -384,12 +406,12 @@ margin: 5px 0;
   border-radius: 2px;
 }
 
-.options li:hover, .options-pg li:hover, .options-acesso li:hover, .options-prod li:hover, .options-cliente li:hover, .options-forn li:hover{
+.options li:hover, .options-pg li:hover, .options-acesso li:hover, .options-prod li:hover, .options-cliente li:hover, .options-forn li:hover, .options-prod-rel li:hover{
   background-color: #aaa;
   color: #000;
 }
 
-.select .active, .select-pg .active, .select-acesso .active, .select-prod .active, .select-cliente .active, .select-forn .active{
+.select .active, .select-pg .active, .select-acesso .active, .select-prod .active, .select-cliente .active, .select-forn .active, .select-prod-rel .active{
   display: block;
 }
 
@@ -401,7 +423,7 @@ margin: 5px 0;
   margin-bottom: 10px;
 }
 
-.tab-caixa thead, .tab-fecha thead {
+.tab-caixa thead, .tab-fecha thead, .tab-CF thead {
   display: inline-block;
   width: 99%;
   background-color: #514869;
@@ -427,25 +449,29 @@ margin: 5px 0;
   background: #f0ffff84;
 }
 
-.tab-caixa th, .tab-fecha th {
+.tab-caixa th, .tab-fecha th, .tab-CF th {
   color: #f0ffff94;
 }
 
-.tab-caixa tbody, .tab-fecha tbody {
+.tab-caixa tbody, .tab-fecha tbody, .tab-CF tbody {
   display: inline-block;
   overflow: auto;
   width: 99%;
   height: 200px;
   background-color: #f0ffff94;
   margin-bottom: 20px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
+
+.tab-CF tbody::-webkit-scrollbar { display: none;}
 
 .tab-fecha tbody {
   width: 95%;
   height: auto;
 }
 
-.tab-caixa td, .tab-fecha td, .tab-fechaItens td {
+.tab-caixa td, .tab-fecha td, .tab-fechaItens td, .tab-CF td {
   text-align: center;
   background-color: #f0ffff94;
 }
@@ -519,6 +545,20 @@ tbody .venda {
   display: block;
 }
 
+.btnEdit, .btnDelet {
+  width: 70px;
+  background-color: rgb(143, 190, 221);
+  border: 1px solid #00f;
+  border-radius: 8px;
+  padding: 2px;
+  margin: 4px;
+  cursor: pointer;
+}
+
+.btnDelet {
+  background-color: rgb(243, 177, 177);
+  border-color: #aa0000;
+}
 
 @media only screen and (max-width: 1400px) {
   .card-login {
@@ -626,7 +666,7 @@ tbody .venda {
     width: 100%;
   }
 
-  .tbody-caixa {
+  .tbody-caixa, .tbody-CF {
     width: 100%;
     height: 100%;
   }

@@ -6,28 +6,29 @@
   <div class="invisible">{{tipo}},{{msg}}</div>
 {{/if}}
 <form action="" method="post" id="form">
-  <input type="hidden" name="fornecedor" id="fornecedor">
-  <input type="hidden" id="forn-select">
+  <input type="hidden" name="codProd" id="idProd" value="todos">
+  <input type="hidden" id="prod-select-rel">
+  <div class="msg" id="msg"><p id="msgtext"></p></div>
   <div class="container">
     <div class="card">
-      <h1>Relatório por fornecedor</h1>
+      <h1>Relatório de historico de preços</h1>
       <div class="subTitle">
-      <div class="msg" id="msg"><p id="msgtext"></p></div>
       <div class="line">
         <div class="textfield">
-          <label for="btn-select-forn">Fornecedor</label>
-          <div class="select-forn">
-            <div class="btn-select-forn">
-              <span>Selecione um fornecedor</span>
+          <label for="btn-select-prod-rel">Produto</label>
+          <div class="select-prod-rel">
+            <div class="btn-select-prod-rel">
+              <span>Todos os produtos</span>
             </div>
-            <div class="select-content-forn">
-              <input type="text" id="input-select-forn">
-              <ul class="options-forn">
+            <div class="select-content-prod-rel">
+              <input type="text" id="input-select-prod-rel">
+              <ul class="options-prod-rel">
               </ul>
             </div>
           </div>
         </div>
-      </div><h2>Filtrar relatório por periodo</h2>
+      </div>
+        <h2>Filtrar relatório por periodo</h2>
       <div class="line">
         <div class="textfield">
           <label for="dateIni">*Data início</label>
@@ -42,7 +43,7 @@
         <p>(*) OBRIGATÓRIO</p>
       </div>
       </div>
-      <button class="btn-salvar" id="btnRelatorioFornecedor">Gerar Relatório</button>
+      <button class="btn-salvar" id="btnRelatorioHistorico">Gerar Relatório</button>
     </div>
   </div>
 </form>

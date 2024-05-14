@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Relatório de Histórico de preços</h1>
+  <div class="data">Data: {{dtAtual}}</div>
+  <hr>
+  <div class="periodo">Periodo:&nbsp &nbsp{{dtIni}} &nbsp a &nbsp {{dtFim}}</div>
+  <hr>
+  <table>
+    <thead>
+      <tr>
+        <th>Prod</th>
+        <th>Data</th>
+        <th>Valor</th>
+        <th>Fornecedor</th>
+        <th>Contato</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each dados}}
+        <tr>
+          <td>{{descricao}}</td>
+          <td>{{dataf}}</td>
+          <td>{{valorf}}</td>
+          <td>{{fornecedor}}</td>
+          <td>{{contato}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</body>
+</html>
+
+<style>
+  h1 {
+    text-align: center;
+    color: #BF8C2C;
+    text-shadow: 1px 1px #201b2c;
+  }
+
+  .data {
+    text-align: end;
+    color: #201b2c;
+  }
+
+  table {
+    border: 3px solid #BF8C2C;
+    width: 100%;
+    color: #222;
+  }
+
+  td, th {
+    text-align: center;
+    border: 1px solid #be9b5a;
+    margin: 0;
+    padding: 0;
+  }
+
+  hr {
+    border-color: #BF8C2C;
+  }
+
+  th{
+    background-color: #BF8C2C;
+  }
+
+  .user {
+    width: 100px;
+  }
+</style>

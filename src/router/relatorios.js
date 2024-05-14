@@ -13,6 +13,10 @@ router.get('/venda', eAdmin, (req, res) => {
   res.render('relatorio/venda')
 })
 
+router.get('/historico', eAdmin, (req, res) => {
+  res.render('relatorio/historico')
+})
+
 router.get('/fornecedor', eAdmin, (req, res) => {
   res.render('relatorio/fornecedor')
 })
@@ -260,10 +264,9 @@ router.post('/conta', async (req, res) => {
   const dataFim = dados.dateFim.split('/')
   const dtIni = dataIni[2]+'-'+dataIni[1]+'-'+dataIni[0]
   const dtFim = dataFim[2]+'-'+dataFim[1]+'-'+dataFim[0]
-  const result = await db.query(`select descricao, DATE_FORMAT(data,"%d/%m/%Y") data, REPLACE(REPLACE(REPLACE(FORMAT(valor,2),',','-'),'.',','),'-','.') valor from contasfixas where data between '${dtIni}' AND '${dtFim}';`)
+  const result = await db.query(`select descricao, DATE_FORMAT(data,"%d/%m/%Y") data, REPLACE(REPLACE(REPLACE(FORMAT(valor,2),',','-'),'.',','),'-','.') valor from contasfixas where data between '${dtIni}' AND '${dtFim}' order by data;`)
 
   const total = await db.query(`SELECT REPLACE(REPLACE(REPLACE(FORMAT(SUM(valor),2),',','-'),'.',','),'-','.') total FROM contasfixas WHERE data between '${dtIni}' AND '${dtFim}';`)
-console.log(total)
   res.render('relatorio/venda/conta', {layout: false, dtIni: dados.dateIni, dtFim: dados.dateFim, dtAtual, dados: result, total: total[0].total }, (err, html)=> {
     if(err){
     console.log(err)
@@ -292,4 +295,45 @@ console.log(total)
   }
 })
 
+router.post('/historico', async (req, res) => {
+  let hist = []
+  const dados = req.body
+  const codProd = dados.codProd
+  const dtAtual = new Date().toLocaleString('pt-br', {timeZone: 'America/Sao_Paulo'}).split(',')[0]
+  const dataIni = dados.dateIni.split('/')
+  const dataFim = dados.dateFim.split('/')
+  const dtIni = dataIni[2]+'-'+dataIni[1]+'-'+dataIni[0]
+  const dtFim = dataFim[2]+'-'+dataFim[1]+'-'+dataFim[0]
+  if(codProd == 'todos'){
+    hist = await db.query(`SELECT e.descricao, DATE_FORMAT(h.data, "%d/%m/%Y") dataf, replace(replace(replace(format(h.valor, 2), '.','-'), ',','.'), '-',',') valorf, f.fornecedor, f.contato  from historicoprecos h inner join estoque e on h.idprod =  e.id left join moviestoque m on h.idmovi = m.id left join fornecedores f on f.id = m.fornecedor WHERE data BETWEEN '${dtIni}' AND '${dtFim}' order by e.descricao, h.data;`)
+  }else {
+      hist = await db.query(`SELECT e.descricao, DATE_FORMAT(h.data, "%d/%m/%Y") dataf, replace(replace(replace(format(h.valor, 2), '.','-'), ',','.'), '-',',') valorf, f.fornecedor, f.contato  from historicoprecos h inner join estoque e on h.idprod =  e.id left join moviestoque m on h.idmovi = m.id left join fornecedores f on f.id = m.fornecedor WHERE data BETWEEN '${dtIni}' AND '${dtFim}' and e.codigo = '${codProd}' order by h.data;`)
+  }
+  res.render('relatorio/estoque/historico', {layout: false, dtIni: dados.dateIni, dtFim: dados.dateFim, dtAtual, dados: hist, }, (err, html)=> {
+    if(err){
+    console.log(err)
+      res.render('relatorio/historico', {msg: 'Erro ao gerar relatório!', tipo: 'erro'})
+    }else {
+      pdf.create(html).toFile(`./src/public/PDFs/historico.pdf`,(err, res) => {
+        if(err){
+          console.log(err)
+          resposta(false)
+        }else
+          if(fs.existsSync(res.filename)){
+            resposta(true, res)
+          }
+      })
+    }
+  })
+
+  function resposta(status, resp = ''){
+    if(!status){
+      req.flash('error_msg', 'Falha ao gerar relatório!')
+      res.redirect('/relatorios')
+    }else{
+      let file = resp.filename
+      res.sendFile(file)
+    }
+  }
+})
 module.exports = router

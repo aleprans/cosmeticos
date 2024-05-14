@@ -252,6 +252,13 @@ $(document).ready(() => {
       $('#form').off('submit').submit()
   })
 
+  $('#btnRelatorioHistorico').click(function() {
+  if($('#dateIni').val() == '' || $('#dateFim').val() == '')
+      msgAlert('Periodo inválido!', 'erro')
+    else
+      $('#form').off('submit').submit()
+  })
+
   $('#codigo_estoque').keyup(function(e) {
     $(this).val($(this).val().toUpperCase())
    })
@@ -265,6 +272,13 @@ $(document).ready(() => {
     let custo = parseFloat($('#custo_estoque').val().replace('.', '').replace(',','.'))
     let lucro = parseFloat($('#lucro_estoque').val())
     if(lucro > 0 && custo > 0) calcularVenda(custo, lucro)
+  })
+
+  $('#venda_estoque').keyup(function() {
+    $('#venda_estoque').mask('999.999.999.990,00', {reverse: true})
+    let custo = parseFloat($('#custo_estoque').val().replace('.', '').replace(',','.'))
+    let venda = parseFloat($('#venda_estoque').val().replace('.', '').replace(',','.'))
+    if(venda > 0 && custo > 0) calcularLucro(custo, venda)
   })
 
   $('#lucro_estoque').keyup(function() {
@@ -307,7 +321,7 @@ $(document).ready(() => {
         dataType: 'json',
         data:{ codigo: dado},
         success:function(json){
-          if(json.length > 0){
+          if(json.status == 'true'){
             $('#descricao_estoque').val(json[0].descricao)
             $('#fabricante_estoque').val(json[0].fabricante)
             $('#qtde_estoque').val(json[0].qtde)
@@ -449,7 +463,7 @@ $(document).ready(() => {
       $('#input-select-prod').focus()
       $('.options-prod').find('li').remove()
       $.ajax({
-        url: '/estoque/list',
+        url: '/estoque/listAll',
         type: 'POST',
         dataType: 'json',
         success:((json)=> {
@@ -471,19 +485,24 @@ $(document).ready(() => {
                 dataType: 'json',
                 data: {codigo: codigo},
                 success:function(json){
-                  $('#id_estoque').val(json[0].id ? json[0].id : '')
-                  $('#cod_estoque').val(json[0].codigo ? json[0].codigo: '')
-                  $('#desc_estoque').val(json[0].descricao ? json[0].descricao : '')
-                  $('#fabricante_estoque').val(json[0].fabricante ? json[0].fabricante : '')
-                  $('#qtde_estoque').val(json[0].qtde ? json[0].qtde : '')
-                  $('#qtdeMin_estoque').val(json[0].qtdeMin ? json[0].qtdeMin : '')
-                  $('#custo_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
-                  $('#custoOrig_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
-                  $('#lucro_estoque').val(json[0].lucro ? json[0].lucro.toFixed(1) : '')
-                  $('#venda_estoque').val(json[0].venda ? String(json[0].venda.toFixed(2)).replace('.',',') : '')
-                  $('#fornecedor_estoque').focus()
-                  $('#btnAtualizar_estoque').removeAttr('disabled')
-                  $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
+                  if(json.status == true){
+                    $('#id_estoque').val(json.data[0].id)
+                    $('#cod_estoque').val(json.data[0].codigo)
+                    $('#desc_estoque').val(json.data[0].descricao)
+                    $('#fabricante_estoque').val(json.data[0].fabricante)
+                    $('#qtde_estoque').val(json.data[0].qtde)
+                    $('#qtdeMin_estoque').val(json.data[0].qtdeMin)
+                    $('#custo_estoque').val(String(json.data[0].valor.toFixed(2)).replace('.',','))
+                    $('#custoOrig_estoque').val(String(json.data[0].valor.toFixed(2)).replace('.',','))
+                    $('#lucro_estoque').val(json.data[0].lucro.toFixed(1))
+                    $('#venda_estoque').val(String(json.data[0].venda.toFixed(2)).replace('.',','))
+                    $('#fornecedor_estoque').focus()
+                    $('#btnAtualizar_estoque').removeAttr('disabled')
+                    $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
+                  }else {
+                    msgAlert('Falha ao consultar estoque!', 'erro')
+                    $('.btn-select-prod span').text('Selecione um produto')
+                  }
                 },
                 error:function(e){
                   msgAlert('Falha ao consultar estoque!', 'erro')
@@ -491,6 +510,36 @@ $(document).ready(() => {
                 }
               })
             })
+          })
+        })
+      })
+    }
+  })
+
+  $('.btn-select-prod-rel').click(function() {
+    $('.select-content-prod-rel').toggleClass('active')
+    if($('.select-content-prod-rel').hasClass('active')){
+      $('#input-select-prod-rel').val('')
+      $('#input-select-prod-rel').focus()
+      $('.options-prod-rel').find('li').remove()
+      $.ajax({
+        url: '/estoque/list',
+        type: 'POST',
+        dataType: 'json',
+        success:((json)=> {
+          let lista = []
+          json.forEach(element => {
+            lista.push(`${element.codigo} - ${element.descricao}`)
+            $('.options-prod-rel').append(`<li class="li">${element.codigo} - ${element.descricao}</li>`)
+          })
+          $('#prod-select-rel').val(lista)
+          $('.li').each(function() {
+            $(this).click(function() {
+              $('.btn-select-prod-rel span').text($(this).text())
+              const cod = $('.btn-select-prod-rel span').text().split('-')
+              $('#idProd').val(cod[0].substring(0 ,cod[0].length - 1))
+              $('.select-content-prod-rel').removeClass('active')
+            })  
           })
         })
       })
@@ -547,7 +596,6 @@ $(document).ready(() => {
     })
     $('.li').each(function() {
       $(this).click(function() {
-        console.log($(this).val())
         $('.btn-select-forn span').text($(this).text())
         $('#fornecedor').val($(this).text()+' - '+$(this).val())
         $('.select-content-forn').removeClass('active')
@@ -632,25 +680,49 @@ $(document).ready(() => {
           dataType: 'json',
           data:{ codigo: codigo},
           success:function(json){
-            $('#id_estoque').val(json[0].id ? json[0].id : '')
-                  $('#cod_estoque').val(json[0].codigo ? json[0].codigo: '')
-                  $('#desc_estoque').val(json[0].descricao ? json[0].descricao : '')
-                  $('#fabricante_estoque').val(json[0].fabricante ? json[0].fabricante : '')
-                  $('#qtde_estoque').val(json[0].qtde ? json[0].qtde : '')
-                  $('#qtdeMin_estoque').val(json[0].qtdeMin ? json[0].qtdeMin : '')
-                  $('#custo_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
-                  $('#custoOrig_estoque').val(json[0].valor ? String(json[0].valor.toFixed(2)).replace('.',',') : '')
-                  $('#lucro_estoque').val(json[0].lucro ? json[0].lucro.toFixed(1) : '')
-                  $('#venda_estoque').val(json[0].venda ? String(json[0].venda.toFixed(2)).replace('.',',') : '')
-                  $('#fornecedor_estoque').focus()
-                  $('#btnAtualizar_estoque').removeAttr('disabled')
-                  $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
+            if(json.status == 'true'){
+              $('#id_estoque').val(json.data[0].id)
+              $('#cod_estoque').val(json.data[0].codigo)
+              $('#fabricante_estoque').val(json.data[0].fabricante)
+              $('#qtde_estoque').val(json.data[0].qtde)
+              $('#qtdeMin_estoque').val(json.data[0].qtdeMin)
+              $('#custo_estoque').val(String(json.data[0].valor.toFixed(2)).replace('.',','))
+              $('#custoOrig_estoque').val(String(json.data[0].valor.toFixed(2)).replace('.',','))
+              $('#lucro_estoque').val(json.data[0].lucro.toFixed(1))
+              $('#venda_estoque').val(String(json.data[0].venda.toFixed(2)).replace('.',','))
+              $('#fornecedor_estoque').focus()
+              $('#btnAtualizar_estoque').removeAttr('disabled')
+              $('#btnAtualizar_estoqueSaida').removeAttr('disabled')
+            }else {
+               msgAlert('Falha ao consultar estoque!', 'erro')
+               $('.btn-select-prod span').text('Selecione um produto')
+            }
           },
           error:function(e){
             msgAlert('Falha ao buscar dados do item no estoque!', 'erro')
             console.log('erro:'+e)
           }
         })
+      })
+    })
+  })
+
+  $('#input-select-prod-rel').keyup(function(e) {
+    var text = $(this).val().toUpperCase()
+    const list = $('#prod-select-rel').val().split(',')
+    const arrFilter = list.filter((item => {
+      return item.toUpperCase().includes(text)
+    }))
+    $('.options-prod-rel').find('li').remove()
+    arrFilter.forEach(element => {
+      $('.options-prod-rel').append(`<li class="li">${element}</li>`)
+    })
+    $('.li').each(function() {
+      $(this).click(function() {
+        $('.btn-select-prod-rel span').text($(this).text())
+        const cod = $('.btn-select-prod-rel span').text().split('-')
+        $('#idProd').val(cod[0].substring(0 ,cod[0].length - 1))
+        $('.select-content-prod-rel').removeClass('active')
       })
     })
   })
@@ -851,6 +923,12 @@ $(document).ready(() => {
     }
   })
 
+  $('#venda_estoque').focus().select()
+
+  $('#lucro_estoque').focus().select()
+
+  $('#custo_estoque').focus().select()
+
   $('#lucro_estoque').keyup(function(e){
     const keycode = (e.keyCode ? e.keyCode : e.wich)
     if(keycode == 13){
@@ -939,7 +1017,6 @@ $(document).ready(() => {
   })
 
   $('#btnSalvarCF').click(function() {
-    console.log($('#dataCF').val())
     if($('#descricaoCF'). val().length < 4)
       msgAlert('Descrição inválida!', 'erro')
     else if($('#dataCF').val() == '')
@@ -948,6 +1025,19 @@ $(document).ready(() => {
       msgAlert('Valor inválido!', 'erro')
     else
       $('#form').off('submit').submit()
+  })
+
+  $('#idItem').focus(function() {
+    const tipo = $('#tipo').val()
+    const id = $(this).val()
+    if(tipo == 'edit')
+      location.assign('/caixa/editCF?id='+id)
+    else if(tipo == 'delet')
+      deletCF(id)
+  })
+
+  $('#btnInserirCF').click(function() {
+    location.assign('/caixa/insertContasFixas')
   })
 
   function validarFormPag() {
@@ -965,6 +1055,11 @@ $(document).ready(() => {
     let venda = ((custo / 100) * lucro)
     let total = venda + custo
     $('#venda_estoque').val(total.toFixed(2).replace('.', ','))
+  }
+
+  function calcularLucro(custo, venda) {
+    let lucro = ((venda / custo) -1) * 100
+    $('#lucro_estoque').val(lucro.toFixed(1))
   }
 
   function validarEstoque(){
@@ -1118,4 +1213,27 @@ $(document).ready(() => {
       }
     })
   }
+
+  function deletCF(id) {
+    $.ajax({
+      url: '/caixa/deletCF',
+      type: 'post',
+      dataType: 'json',
+      data: {id: id},
+      success: function(json){
+        if(json.status == true){
+          msgAlert(json.msg, 'sucesso')
+          setTimeout(() => {
+            location.reload()
+          }, 3000);
+        }else if(json.status == false)
+          msgAlert('Falha ao deletar conta', 'erro')
+
+      },
+      error: function(e){
+        console.log('erro: '+e)
+      }
+    })
+  }
+
 })

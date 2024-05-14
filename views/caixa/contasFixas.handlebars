@@ -3,28 +3,54 @@
   <div class="invisible">{{tipo}},{{msg}}</div>
 {{/if}}
 <form action="" method="post" id="form">
+  <input type="hidden" id="idItem" name="idItem">
+  <input type="hidden" id="tipo">
   <div class="container">
     <div class="card">
-      <h1>Cadastro de Contas fixas</h1>
+      <h1>Contas fixas</h1>
         <div class="msg" id="msg"><p id="msgtext"></p></div>
       <div class="line">
         <div class="textfield">
-          <label for="descricao">*Descrição</label>
-          <input type="text" name="descricao" id="descricaoCF" placeholder="Ex: Aluguel" autocomplete="off"/>
+          <table class="tab-CF">
+            <thead>
+              <tr>
+                <th class="lf1">Descrição</th>
+                <th class="lf2">Data</th>
+                <th class="lf3">Valor</th>
+                <th class="l4">Ações</th>
+              </tr>
+            </thead>
+            <tbody class="tbody-CF">
+              {{#each dados}}
+              <tr>
+                <td class="lf1">{{descricao}}</td>
+                <td class="lf2">{{dataf}}</td>
+                <td class="lf3">{{valor}}</td>
+                <td class="l4">
+                  <input type="button" value="Editar" class="btnEdit" onclick="btnEditCF({{id}})" />
+                  <input type="button" value="Deletar" class="btnDelet" onclick="btnDeletCF({{id}})"/>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
         </div>
-        <div class="textfield">
-          <label for="dataCF">*Data de pagamento</label>
-          <input type="text" name="dataCF" id="dataCF" class="date" placeholder="___/___/___  " autocomplete="off"/>
-        </div>
-        <div class="textfield">
-          <label for="valorCF">*Valor</label>
-          <input type="text" name="valorCF" id="valorCF" placeholder="Ex: 1.000,00" autocomplete="off"/>
-        </div>
-      </div>
-      <div class="lbl">
-        <p>(*) OBRIGATÓRIO (**) Minino de 3 caracteres</p>
-      </div>
-      <button class="btn-salvar" id="btnSalvarCF">Salvar</button>
+      </div> 
+      <button class="btn-salvar" id="btnInserirCF">Inserir Conta</button>
     </div>
   </div>
 </form>
+
+<script>
+  function btnEditCF(id) {
+    $('#tipo').val('edit')
+    $('#idItem').val(id)
+    $('#idItem').focus()
+  }
+  function btnDeletCF(id) {
+    $('#tipo').val('delet')
+    $('#idItem').val(id)
+    $('#idItem').focus()
+  }
+
+</script>

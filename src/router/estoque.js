@@ -8,8 +8,13 @@ router.get('/',(req, res) => {
   res.render('estoque/menu')
 })
 
-router.post('/list', async (req, res) => {
+router.post('/listAll', async (req, res) => {
   const rows = await db.selectAll(2)
+  res.json(rows)
+})
+
+router.post('/list', async (req, res) => {
+  const rows = await db.query('SELECT * FROM estoque WHERE qtde > 0;')
   res.json(rows)
 })
 
@@ -44,7 +49,7 @@ router.post('/entrada', async (req, res) => {
     const resp = await db.insert(3, {codigo: dados.codigo, qtde: qtdeInsert, data: dtAtual, user, tipo: 1, fornecedor: idForn, nota: dados.nota, motivo: null, valor: custo})
     if(resp[0].affectedRows == 1) {
       if(dados.custoOrig == '' || dados.custoOrig != dados.custo ) {
-        const result = await db.insert(8, {prod: dados.id, data: dtAtual, valor: custo, lucro: dados.lucro, venda: venda})
+        const result = await db.insert(8, {prod: dados.id, data: dtAtual, valor: custo, lucro: dados.lucro, venda: venda, idmovi: resp[0].insertId})
         if(result[0].affectedRows == 1) {
           await db.query('COMMIT')
           res.render('estoque/entrada', {tipo: 'sucesso', msg: 'Dados salvos com sucesso!'})
@@ -91,7 +96,10 @@ router.post('/saida', async (req, res) => {
 router.post('/pesq', async (req, res, next) => {
   const {codigo} = req.body
   const result = await db.query(`select e.*, h.id hid, h.data, h.valor, h.lucro, h.venda from estoque e left join historicoprecos h on h.idprod = e.id where e.codigo = '${codigo}' order by h.id desc limit 1;`)
-  res.json(result)
+  if(result)
+    res.json({status: true, data: result})
+  else
+    res.json({status: false})
 })
 
 router.post('/cadastro', async (req, res, next) => {
